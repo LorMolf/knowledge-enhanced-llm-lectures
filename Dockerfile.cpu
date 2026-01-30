@@ -1,0 +1,39 @@
+FROM python:3.11-slim
+LABEL maintainer="UniboNLP"
+
+# Zero interaction (default answers to all questions)
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set work directory
+WORKDIR /workspace
+ENV APP_PATH=/workspace
+
+# Install general-purpose dependencies
+RUN apt-get update -y && \
+    apt-get install -y curl \
+                        git \
+                        bash \
+                        nano \
+                        zstd && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Ollama
+RUN curl -fsSL https://ollama.com/install.sh | sh
+
+RUN pip install --upgrade pip
+RUN pip install wrapt --upgrade --ignore-installed
+RUN pip install gdown
+
+RUN pip install jupyterlab==4.5.3 ipywidgets
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Back to default frontend
+ENV DEBIAN_FRONTEND=dialog
+
+# Start Ollama in background, then Jupyter
+CMD bash -c "ollama serve > /var/log/ollama.log 2>&1 & sleep 2 && jupyter lab --ip=0.0.0.0 --port=8888 --allow-root --no-browser --NotebookApp.token='' --NotebookApp.password=''"

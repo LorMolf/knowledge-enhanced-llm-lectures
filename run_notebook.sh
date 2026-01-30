@@ -20,6 +20,7 @@ DEFAULT_PORT="${SSH_PORT:-22}"
 LOCAL_PORT="${LOCAL_PORT:-50000}"
 REMOTE_PORT="${REMOTE_PORT:-50000}"
 WORKSPACE_PATH="${WORKSPACE_PATH:-\$HOME/workspace}"
+CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
 
 # Colors
 RED='\033[0;31m'
@@ -54,9 +55,10 @@ usage() {
     echo "  -p, --port PORT     SSH port (default: ${DEFAULT_PORT})"
     echo ""
     echo "Environment variables:"
-    echo "  LOCAL_PORT          Local port for tunnel (default: 50000)"
-    echo "  REMOTE_PORT         Remote Jupyter port (default: 50000)"
-    echo "  WORKSPACE_PATH      Remote workspace path (default: \$HOME/workspace)"
+    echo "  LOCAL_PORT            Local port for tunnel (default: 50000)"
+    echo "  REMOTE_PORT           Remote Jupyter port (default: 50000)"
+    echo "  WORKSPACE_PATH        Remote workspace path (default: \$HOME/workspace)"
+    echo "  CUDA_VISIBLE_DEVICES  GPU device to use (default: 0)"
     echo ""
     echo "Examples:"
     echo "  $0 connect lam_agents"
@@ -153,21 +155,21 @@ launch_jupyter() {
     local image="unibonlp/textmining-llm-notebooks:${notebook}"
     local container="textmining-llm-lab-${notebook}"
     
-    print_info "Launching Jupyter on ${SERVER} for notebook: ${notebook}"
+    print_info "Launching Jupyter on ${SERVER} for notebook: ${notebook} (GPU: ${CUDA_VISIBLE_DEVICES})"
     
     # SSH command to run on remote
     local remote_cmd="
         docker rm -f ${container} 2>/dev/null || true
         docker run -d \\
             --name ${container} \\
-            --gpus all \\
+            --gpus '\"device=${CUDA_VISIBLE_DEVICES}\"' \\
             -p ${REMOTE_PORT}:8888 \\
             -m 30g \\
             -v ${WORKSPACE_PATH}:/workspace \\
             ${image} \\
             jupyter lab --ip=0.0.0.0 --port=8888 --allow-root --no-browser \\
                 --NotebookApp.token='' --NotebookApp.password=''
-        echo 'Container started: ${container}'
+        echo 'Container started: ${container} (GPU: ${CUDA_VISIBLE_DEVICES})'
     "
     
     print_cmd "ssh -p ${SSH_PORT} ${USER}@${SERVER} '...'"

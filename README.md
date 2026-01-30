@@ -39,7 +39,7 @@ Run notebooks on your own machine using Docker.
 ./start.sh rag_chatbot --cpu
 ```
 
-The script builds the image, starts the container, and opens your browser at http://localhost:8888
+The script builds the image, starts the container, and opens your browser at http://localhost:50000
 
 ### Commands
 
@@ -107,7 +107,7 @@ Available notebooks: `lam_agents`, `prompting_finetuning`, `rag_chatbot`
 
 ### 3. Access Jupyter
 
-Open http://localhost:8888 in your browser.
+Open http://localhost:50000 in your browser.
 
 ### Other Remote Commands
 
@@ -135,9 +135,32 @@ Open http://localhost:8888 in your browser.
 | `SSH_PORT` | SSH port | 22 |
 | `LOCAL_PORT` | Local Jupyter port | 50000 |
 | `REMOTE_PORT` | Remote Jupyter port | 50000 |
-| `WORKSPACE_PATH` | Remote workspace | /workspace |
+| `WORKSPACE_PATH` | Remote workspace | $HOME/workspace |
 | `HF_TOKEN` | HuggingFace API token | - |
-| `CUDA_VISIBLE_DEVICES` | GPU selection | all |
+| `CUDA_VISIBLE_DEVICES` | GPU device to use | 0 |
+
+### GPU Configuration
+
+By default, containers use **GPU 0 only**. To change which GPU(s) are visible inside the container:
+
+```bash
+# Use GPU 1 instead
+export CUDA_VISIBLE_DEVICES=1
+./start.sh rag_chatbot
+
+# Use multiple GPUs
+export CUDA_VISIBLE_DEVICES=0,1
+./run_notebook.sh connect lam_agents
+
+# Or set in .env file
+echo "CUDA_VISIBLE_DEVICES=1" >> .env
+```
+
+**Available values:**
+- `0` - GPU 0 only (default)
+- `1` - GPU 1 only
+- `0,1` - GPUs 0 and 1
+- `0,1,2` - GPUs 0, 1, and 2
 
 ### Customizing Connections
 

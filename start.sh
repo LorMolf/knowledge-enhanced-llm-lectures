@@ -7,11 +7,17 @@
 
 set -e
 
+# Load .env if exists
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+if [[ -f "${SCRIPT_DIR}/.env" ]]; then
+    source "${SCRIPT_DIR}/.env"
+fi
+
 # Configuration
 IMAGE_NAME="unibonlp/textmining-llm-notebooks"
 CONTAINER_NAME="textmining-llm-lab"
 JUPYTER_PORT="${JUPYTER_PORT:-50000}"
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
 
 # Available notebooks
 NOTEBOOKS=("lam_agents" "prompting_finetuning" "rag_chatbot")
@@ -129,8 +135,8 @@ if [[ "$USE_CPU" == true ]]; then
 else
     IMAGE_TAG="${IMAGE_NAME}:${NOTEBOOK}"
     DOCKERFILE="${SCRIPT_DIR}/Dockerfile"
-    GPU_FLAG="--gpus all"
-    print_info "Mode: GPU"
+    GPU_FLAG="--gpus '\"device=${CUDA_VISIBLE_DEVICES}\"'"
+    print_info "Mode: GPU (device=${CUDA_VISIBLE_DEVICES})"
 fi
 
 CONTAINER="${CONTAINER_NAME}-${NOTEBOOK}"
@@ -166,7 +172,7 @@ if [[ "$USE_CPU" == true ]]; then
 else
     docker run -d \
         --name "${CONTAINER}" \
-        --gpus all \
+        --gpus "device=${CUDA_VISIBLE_DEVICES}" \
         -p "${JUPYTER_PORT}:8888" \
         -v "${SCRIPT_DIR}/${NOTEBOOK}:/workspace/${NOTEBOOK}" \
         -w "/workspace/${NOTEBOOK}" \

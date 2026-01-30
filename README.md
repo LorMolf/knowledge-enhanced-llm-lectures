@@ -133,11 +133,51 @@ Open http://localhost:8888 in your browser.
 | `REMOTE_SERVER` | GPU server address | 137.204.107.40 |
 | `REMOTE_USER` | SSH username | molfetta |
 | `SSH_PORT` | SSH port | 22 |
-| `LOCAL_PORT` | Local Jupyter port | 8888 |
-| `REMOTE_PORT` | Remote Jupyter port | 8888 |
+| `LOCAL_PORT` | Local Jupyter port | 50000 |
+| `REMOTE_PORT` | Remote Jupyter port | 50000 |
 | `WORKSPACE_PATH` | Remote workspace | /workspace |
 | `HF_TOKEN` | HuggingFace API token | - |
 | `CUDA_VISIBLE_DEVICES` | GPU selection | all |
+
+### Customizing Connections
+
+You can customize connection settings in multiple ways:
+
+**1. Using `.env` file (Recommended)**
+```bash
+cp .env.example .env
+# Edit .env with your values
+```
+
+**2. Using command-line arguments**
+```bash
+./run_notebook.sh connect lam_agents -s 192.168.1.100 -u username -p 22
+```
+
+**3. Using environment variables**
+```bash
+export LOCAL_PORT=50000
+export REMOTE_PORT=50000
+export SSH_PORT=22
+./run_notebook.sh connect lam_agents
+```
+
+**Default Port Configuration:**
+- **Local Port**: 50000 (port on your machine where Jupyter will be accessible)
+- **Remote Port**: 50000 (port inside the Docker container running Jupyter)
+- **SSH Port**: 22 (standard SSH port, may vary by server)
+
+When connecting, the SSH tunnel maps `localhost:50000` on your machine to `localhost:50000` on the remote server, which forwards to port 50000 inside the Docker container.
+
+**Port Customization Example:**
+```bash
+# Use different ports
+export LOCAL_PORT=8888
+export REMOTE_PORT=8888
+./run_notebook.sh connect rag_chatbot
+```
+
+For manual setup instructions, see [utils/connect_jupyter_server.md](utils/connect_jupyter_server.md).
 
 ---
 

@@ -17,9 +17,9 @@ fi
 DEFAULT_SERVER="${REMOTE_SERVER:-137.204.107.40}"
 DEFAULT_USER="${REMOTE_USER:-molfetta}"
 DEFAULT_PORT="${SSH_PORT:-22}"
-LOCAL_PORT="${LOCAL_PORT:-8888}"
-REMOTE_PORT="${REMOTE_PORT:-8888}"
-WORKSPACE_PATH="${WORKSPACE_PATH:-/workspace}"
+LOCAL_PORT="${LOCAL_PORT:-50000}"
+REMOTE_PORT="${REMOTE_PORT:-50000}"
+WORKSPACE_PATH="${WORKSPACE_PATH:-\$HOME/workspace}"
 
 # Colors
 RED='\033[0;31m'
@@ -54,9 +54,9 @@ usage() {
     echo "  -p, --port PORT     SSH port (default: ${DEFAULT_PORT})"
     echo ""
     echo "Environment variables:"
-    echo "  LOCAL_PORT          Local port for tunnel (default: 8888)"
-    echo "  REMOTE_PORT         Remote Jupyter port (default: 8888)"
-    echo "  WORKSPACE_PATH      Remote workspace path (default: /workspace)"
+    echo "  LOCAL_PORT          Local port for tunnel (default: 50000)"
+    echo "  REMOTE_PORT         Remote Jupyter port (default: 50000)"
+    echo "  WORKSPACE_PATH      Remote workspace path (default: \$HOME/workspace)"
     echo ""
     echo "Examples:"
     echo "  $0 connect lam_agents"

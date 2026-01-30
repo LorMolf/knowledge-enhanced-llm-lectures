@@ -10,7 +10,7 @@ set -e
 # Configuration
 IMAGE_NAME="unibonlp/textmining-llm-notebooks"
 CONTAINER_NAME="textmining-llm-lab"
-JUPYTER_PORT="${JUPYTER_PORT:-8888}"
+JUPYTER_PORT="${JUPYTER_PORT:-50000}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Available notebooks

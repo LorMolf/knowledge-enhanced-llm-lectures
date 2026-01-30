@@ -31,5 +31,4 @@ rouge_score==0.1.2
 
 # Utilities
 pydantic==2.12.5
-networkx==3.6.1
 matplotlib==3.10.8

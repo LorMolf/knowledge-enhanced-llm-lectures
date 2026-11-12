@@ -50,16 +50,14 @@ means = np.array([per_question[k].mean() for k in KS])
 low = np.array([bootstrap_ci(per_question[k], seed=SEED)[1] for k in KS])
 high = np.array([bootstrap_ci(per_question[k], seed=SEED)[2] for k in KS])
 ax.fill_between(KS, low, high, color=OURS, alpha=0.16, linewidth=0)
-ax.plot(KS, means, color=OURS, marker="o", label="PubMedBERT CLS")
-ax.plot(KS, [score(ideal_metrics, "ndcg", k) for k in KS], color=BASELINE, linestyle="--",
-        label="ideal ranking")
+ax.plot(KS, means, color=OURS, marker="o")
+ax.plot(KS, [score(ideal_metrics, "ndcg", k) for k in KS], color=BASELINE, linestyle="--")
 ax.annotate("ideal", (KS[-1], 1.0), textcoords="offset points", xytext=(-4, 6),
             fontsize=7, color=BASELINE, ha="right")
-ax.annotate("PubMedBERT CLS", (KS[-1], means[-1]), textcoords="offset points", xytext=(-4, -12),
+ax.annotate("PubMedBERT CLS", (KS[-1], means[-1]), textcoords="offset points", xytext=(-4, 10),
             fontsize=7, color=OURS, ha="right")
 ax.set(xticks=KS, ylim=(0, 1.08))
 panel(ax, "cutoff k", "nDCG@k", "retrieval quality against the best achievable ranking\n95% bootstrap band over 32 questions")
-ax.legend(loc="lower right")
 plt.show()
 
 # 6. The other metrics are numbers, not panels: observed against the ceiling at k=10.

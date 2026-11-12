@@ -20,6 +20,11 @@ import requests
 # 1. LLM_URL and LLM_MODEL come from the cell that started the server.
 def chat(messages, tools=None, reasoning=False):
     """One chat completion; reasoning=True makes the model think before it answers."""
+    # One guard for every caller: if section 14 could not start the server, answer with a
+    # stub so sections 15-17 still run and show their tables instead of stopping the lecture.
+    if not SERVER_READY:
+        return {"role": "assistant", "content": "[stub: no local model]"}
+
     # Answer-only by default: section 15 makes 96 calls, and a trace per call triples
     # the budget for no gain a reader can see. Section 14 shows the thinking answer.
     # 2. the OpenAI-shaped payload, with the template switch spelled out
@@ -41,6 +46,9 @@ def chat(messages, tools=None, reasoning=False):
 
 def chat_full(messages, reasoning=True):
     """The same call, returning usage too: thinking costs tokens you never see."""
+    if not SERVER_READY:
+        return {"role": "assistant", "content": "[stub: no local model]"}, {"total_tokens": 0}
+
     payload = {
         "model": LLM_MODEL,
         "messages": messages,

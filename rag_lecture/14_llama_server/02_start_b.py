@@ -43,3 +43,10 @@ print("server ready:", SERVER_READY, "| log: llama-server.log")
 if not SERVER_READY:
     tail = Path("llama-server.log").read_text(errors="replace").splitlines()[-20:]
     print("\n".join(tail))
+    if "GLIBC" in "\n".join(tail):
+        print(
+            "\nThis image has an older glibc than the pinned llama.cpp build needs. Two ways out:\n"
+            "  - build it here: cmake -B build -DGGML_CUDA=1 && cmake --build build -j --target llama-server\n"
+            "  - or accept the skip: section 14 reports the failure and sections 15-17 run with\n"
+            "    stub answers, so the rest of the lecture still executes end to end."
+        )

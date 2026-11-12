@@ -1,67 +1,57 @@
 r"""
 <a name="section-14"></a>
 
-# 14. A reasoning model through llama-server
+# 14. A reasoning model, served from Python
 
-The retrieval side is done; this is the generator. A free Colab GPU has about 14 GB
-of usable memory, so the model must fit next to everything the notebook has already
-loaded: `Gemma 4 12B` in Unsloth's QAT dynamic quant is 6.7 GB of weights, which
-leaves room for an 8k context and the encoders. It is also a *reasoning* model with a
-switch: the same weights either think before answering or answer directly, and
-llama.cpp exposes that switch both at launch and per request.
+The retrieval side is done; this is the generator. A free Colab GPU has about 14 GB of
+usable memory, so the model has to fit next to what the notebook already loaded:
+`Gemma 4 12B` in Unsloth's QAT dynamic quant is 6.7 GB of weights, which leaves room for
+an 8k context and the encoders.
 
-This cell pins the llama.cpp release, the model and the endpoint. The flags worth
-reading: `--jinja` uses the model's own chat template, `--reasoning auto` lets the
-template decide whether thinking is on by default, and `--reasoning-format auto`
-parses the thought channel into a separate `reasoning_content` field instead of
-leaving it in the answer text.
+The server is `llama-cpp-python`, installed with pip, so there is no release binary to
+download and nothing to match against the image's glibc — the one failure mode that used
+to break this section on older machines. `python -m llama_cpp.server` speaks the OpenAI
+API, which is why the client in the next cell is four lines.
 
-The GGUF was checked at `unsloth/gemma-4-12B-it-qat-GGUF` revision `980b060c`; the flags
-below pin the quant name only, so re-check that revision if the numbers move
-(`gemma-4-12B-it-qat-UD-Q4_K_XL.gguf`, 6.72 GB). Quantization-aware training keeps it
-near bfloat16 quality at four bits, and the dynamic recipe spends its bits on the
-layers that hurt most. `-hf` follows the repository head, so re-check that hash if the numbers move;
-the flag pins the quant name, not the revision, so a later upload can change these numbers. A 14 GB T4 holds 6.7 GB of weights plus about 1.4 GB of KV cache at 8k
-context; `gemma-4-E4B-it-GGUF` is the fallback when a runtime is tighter.
+The GGUF was checked at `unsloth/gemma-4-12B-it-qat-GGUF` revision `980b060c`
+(`gemma-4-12B-it-qat-UD-Q4_K_XL.gguf`, 6.72 GB). Quantization-aware training keeps it near
+bfloat16 quality at four bits. If the runtime is tighter, `gemma-4-E4B-it-GGUF` is the
+fallback.
 """
 
 import shutil
-import subprocess
-import tarfile
-import time
 import urllib.request
 from pathlib import Path
 
-# 1. Pin the exact release and the endpoint every later cell calls.
-LLAMA_VERSION = "b11960"
-LLAMA_ASSET = f"llama-{LLAMA_VERSION}-bin-ubuntu-cuda-12.8-x64.tar.gz"
-LLAMA_URL = "https://github.com/ggml-org/llama.cpp/releases/download/" + f"{LLAMA_VERSION}/{LLAMA_ASSET}"
-LLAMA_DIR = Path(f"llama-{LLAMA_VERSION}")
-
-LLM_URL = "http://127.0.0.1:8080/v1"
+# 1. The model, the endpoint, and the revision every later cell depends on.
 LLM_MODEL = "gemma4-12b"
+LLM_URL = "http://127.0.0.1:8080/v1"
+LLM_REPO = "unsloth/gemma-4-12B-it-qat-GGUF"
+LLM_FILE = "gemma-4-12B-it-qat-UD-Q4_K_XL.gguf"
+LLM_REVISION = "980b060c"
+LLM_CTX = 8192
 
-# 2. 6.7 GB of weights, 8k context, all layers on the T4.
-LLAMA_FLAGS = [
-    "-hf", "unsloth/gemma-4-12B-it-qat-GGUF:UD-Q4_K_XL",
-    "--alias", LLM_MODEL,
-    "--host", "127.0.0.1",
-    "--port", "8080",
-    "--jinja",                # the model's own template, required for tool calls
-    "--reasoning", "auto",    # thinking on/off is decided by the template
-    "--reasoning-format", "auto",  # the thought channel becomes reasoning_content
-    "-c", "8192",
-    "--n-gpu-layers", "99" if shutil.which("nvidia-smi") else "0",
-]
+
+def server_args(model_path):
+    """The flags that matter: all layers on the GPU, an 8k window, the model's own template."""
+    return [
+        "--model", str(model_path),
+        "--alias", LLM_MODEL,
+        "--host", "127.0.0.1",
+        "--port", "8080",
+        "--n_ctx", str(LLM_CTX),
+        "--n_gpu_layers", "-1" if shutil.which("nvidia-smi") else "0",
+        "--chat_format", "gemma",
+    ]
 
 
 def server_ready(timeout=2):
-    """The /props endpoint answers only once the weights are loaded."""
+    """The OpenAI route answers only once the weights are loaded."""
     try:
-        urllib.request.urlopen("http://127.0.0.1:8080/props", timeout=timeout)
+        urllib.request.urlopen("http://127.0.0.1:8080/v1/models", timeout=timeout)
         return True
     except OSError:
         return False
 
 
-print("pinned", LLAMA_VERSION, "| model", LLM_MODEL, "| endpoint", LLM_URL)
+print("model", LLM_MODEL, "| endpoint", LLM_URL, "| installed:", shutil.which("python") is not None)

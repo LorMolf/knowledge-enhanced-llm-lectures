@@ -94,6 +94,10 @@ uv pip install --system \
   "huggingface-hub" "sentencepiece" "pandas>=3" "scikit-learn>=1.6" \
   "matplotlib" "seaborn" "embedding-atlas>=0.26" "umap-learn>=0.5" "anywidget" \
   "trectools==0.0.50" "ranx>=0.3.20,<0.4" "rank-bm25==0.2.2" "wandb>=0.19" \
-  "gliner2[local]==2.1.0" "networkx>=3.4" "requests" "pyarrow"
+  "gliner2[local]==2.1.0" "networkx>=3.4" "requests" "pyarrow" "openai>=1.60"
+
+# llama.cpp's OpenAI-compatible server, built once with CUDA: this is the slow line.
+CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 \
+  uv pip install --system --reinstall --no-binary llama-cpp-python "llama-cpp-python>=0.3.16"
 
 echo "Installed. Restart the runtime (Runtime > Restart session), then run the next cell."

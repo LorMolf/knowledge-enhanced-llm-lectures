@@ -1,47 +1,41 @@
 r"""
-### The client, and the thinking switch
+### The client, with the OpenAI library
 
-`llama-server` exposes the same `/v1/chat/completions` route as OpenAI, so the client
-is a POST. The one extra key is `chat_template_kwargs`: it is passed into the model's
-own chat template, so `{"enable_thinking": false}` turns reasoning off for *that
-request* while the server keeps running — the per-request half of the switch, next to
-the `--reasoning` flag that decided the default at launch. `chat_full()` keeps the
-whole response, because the thinking demo needs the token counts the message drops.
+`llama_cpp.server` exposes the OpenAI API, so the client is the `openai` package pointed
+at localhost — the same twelve lines a student would write against a hosted model, which
+is the point: swapping the base URL is the whole difference between a laptop model and an
+API. The one extra key is `chat_template_kwargs`: it reaches the model's own chat
+template, so `{"enable_thinking": false}` turns reasoning off for *that request* while the
+server keeps running. `chat_full()` returns the whole response, because the thinking demo
+needs the token counts the message drops.
 
-Gemma 4's template turns that flag into its own `<|think|>` trigger, so the same
-three lines work for any model whose template declares `enable_thinking`.
-
-> The last two prints ask the server what it believes it is serving; they should match
-> `LLM_MODEL` and the context size we launched with.
+> The last print asks the server what it is serving; it should match `LLM_MODEL`.
 """
 
-import requests
+from openai import OpenAI
 
-# 1. LLM_URL and LLM_MODEL come from the cell that started the server.
+# 1. The client every later cell calls; LLM_URL and LLM_MODEL come from section 14's first cell.
+client = OpenAI(base_url=LLM_URL, api_key="local")
+
+
 def chat(messages, tools=None, reasoning=False):
     """One chat completion; reasoning=True makes the model think before it answers."""
-    # One guard for every caller: if section 14 could not start the server, answer with a
-    # stub so sections 15-17 still run and show their tables instead of stopping the lecture.
+    # One guard for every caller: if the server never came up, answer with a stub so
+    # sections 15-17 still run and show their tables instead of stopping the lecture.
     if not SERVER_READY:
         return {"role": "assistant", "content": "[stub: no local model]"}
 
     # Answer-only by default: section 15 makes 96 calls, and a trace per call triples
     # the budget for no gain a reader can see. Section 14 shows the thinking answer.
-    # 2. the OpenAI-shaped payload, with the template switch spelled out
-    payload = {
-        "model": LLM_MODEL,
-        "messages": messages,
-        "temperature": 0.1,
-        "max_tokens": 1024 if reasoning else 256,
-        "chat_template_kwargs": {"enable_thinking": reasoning},
-    }
-    if tools is not None:
-        payload["tools"] = tools
-
-    # 3. one POST, then surface HTTP errors instead of returning junk
-    response = requests.post(f"{LLM_URL}/chat/completions", json=payload, timeout=180)
-    response.raise_for_status()
-    return response.json()["choices"][0]["message"]
+    completion = client.chat.completions.create(
+        model=LLM_MODEL,
+        messages=messages,
+        temperature=0.1,
+        max_tokens=1024 if reasoning else 256,
+        tools=tools,
+        extra_body={"chat_template_kwargs": {"enable_thinking": reasoning}},
+    )
+    return completion.choices[0].message.model_dump()
 
 
 def chat_full(messages, reasoning=True):
@@ -54,23 +48,19 @@ def chat_full(messages, reasoning=True):
             "usage": {"completion_tokens": 0, "prompt_tokens": 0, "total_tokens": 0},
         }
 
-    payload = {
-        "model": LLM_MODEL,
-        "messages": messages,
-        "temperature": 0.1,
-        "max_tokens": 1024 if reasoning else 256,
-        "chat_template_kwargs": {"enable_thinking": reasoning},
-    }
-    response = requests.post(f"{LLM_URL}/chat/completions", json=payload, timeout=180)
-    response.raise_for_status()
-    return response.json()
+    completion = client.chat.completions.create(
+        model=LLM_MODEL,
+        messages=messages,
+        temperature=0.1,
+        max_tokens=1024 if reasoning else 256,
+        extra_body={"chat_template_kwargs": {"enable_thinking": reasoning}},
+    )
+    return completion.model_dump()
 
 
-# 4. what the server believes it is serving, when there is one to ask
+# 2. What the server says it is serving, when there is one to ask.
 if SERVER_READY:
-    served = requests.get(f"{LLM_URL}/props", timeout=10).json()
-    print("served model:", served.get("model_alias"),
-          "| context:", served.get("default_generation_settings", {}).get("n_ctx"))
+    print("served models:", [entry.id for entry in client.models.list().data], "| expected:", LLM_MODEL)
 else:
-    print("no server to ask: section 14's binary did not start, so the client returns stubs")
-print("reply fields: content, reasoning_content, usage")
+    print("no server to ask: section 14's server did not start, so the client returns stubs")
+print("reply fields: content, tool_calls, usage")

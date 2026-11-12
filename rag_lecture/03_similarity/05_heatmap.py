@@ -38,8 +38,9 @@ sns.heatmap(
     fmt=".2f",
     xticklabels=heat_ids,
     yticklabels=query_ids[:5],
-    cmap="vlag",
-    center=0,
+    cmap="viridis",
+    vmin=float(small_scores.min()),
+    vmax=float(small_scores.max()),
     ax=ax,
 )
 ax.set(
@@ -49,3 +50,11 @@ ax.set(
 )
 fig.tight_layout()
 plt.show()
+
+# 6. answer the question in words: is the labelled paper the top score in its row?
+winners = small_scores.argmax(dim=1).tolist()
+for row, (qid, column) in enumerate(zip(query_ids[:5], winners)):
+    best_id = heat_ids[column]
+    correct = best_id == heat_ids[row]
+    print(f"{qid}  top-1 {'is its labelled paper' if correct else f'is {best_id}, not its labelled paper'}"
+          f"  ({float(small_scores[row, column]):.3f})")

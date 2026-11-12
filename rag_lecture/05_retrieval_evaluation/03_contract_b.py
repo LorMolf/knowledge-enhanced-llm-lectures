@@ -22,7 +22,7 @@ def evaluate_run(name, rankings):
     all_rankings[name] = canonical
     evaluation_rows[:] = [existing for existing in evaluation_rows if existing["model"] != name]
     evaluation_rows.append(row)
-    return metrics
+    return row  # one flat row, the same shape the ledger holds
 
 
 print("evaluate_run ready: validity checks first, then one total order, then the ledger.")

@@ -27,20 +27,23 @@ ideal_metrics = evaluator.compute_metrics(
     [ideal_rankings[qid] for qid in evaluator.queries_ids]
 )
 
-# 3. One panel per metric, observed vs ideal, so the gap is visible.
+# 3. Flat keys on both sides: evaluate_run returns one row, compute_metrics nests by k.
+ideal_flat = {f"{m}@{k}": v for m, vals in ideal_metrics.items() for k, v in vals.items()}
+
+# 4. One panel per metric, observed vs ideal, so the gap is visible.
 fig, axes = plt.subplots(2, 3, figsize=(11, 5), sharey=True)
 for ax, metric in zip(axes.flat, ("accuracy", "precision", "recall", "mrr", "ndcg", "map")):
-    ax.plot(KS, [naive_metrics[f"{metric}@k"][k] for k in KS], marker="o", label="PubMedBERT CLS")
+    ax.plot(KS, [naive_metrics[f"{metric}@{k}"] for k in KS], marker="o", label="PubMedBERT CLS")
     ax.plot(
         KS,
-        [ideal_metrics[f"{metric}@k"][k] for k in KS],
+        [ideal_flat[f"{metric}@{k}"] for k in KS],
         linestyle="--",
         color="gray",
         label="ideal ranking",
     )
     ax.set(title=metric.upper(), xlabel="cutoff k", ylabel="mean score", ylim=(0, 1), xticks=KS)
 axes[0, 0].legend(frameon=False, fontsize=8)
-gaps = {metric: ideal_metrics[f"{metric}@10"][10] - naive_metrics[f"{metric}@10"][10]
+gaps = {metric: ideal_flat[f"{metric}@10"] - naive_metrics[f"{metric}@10"]
         for metric in ("accuracy", "recall", "ndcg", "map")}
 print("remaining gap at k=10:", {m: round(g, 3) for m, g in gaps.items()})
 fig.tight_layout()

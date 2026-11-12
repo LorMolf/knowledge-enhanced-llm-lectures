@@ -47,7 +47,12 @@ def chat(messages, tools=None, reasoning=False):
 def chat_full(messages, reasoning=True):
     """The same call, returning usage too: thinking costs tokens you never see."""
     if not SERVER_READY:
-        return {"role": "assistant", "content": "[stub: no local model]"}, {"total_tokens": 0}
+        # same envelope as a real response, so the cells that read usage still work
+        return {
+            "choices": [{"message": {"role": "assistant", "content": "[stub: no local model]",
+                                     "reasoning_content": ""}}],
+            "usage": {"completion_tokens": 0, "prompt_tokens": 0, "total_tokens": 0},
+        }
 
     payload = {
         "model": LLM_MODEL,

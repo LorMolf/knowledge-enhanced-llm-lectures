@@ -1,25 +1,27 @@
 r"""
 ### Revisit the same sentences
 
-Only pooling changed. Compare CLS and mean on the same constructed answer,
-paraphrase, negation and shared-word distractor from section 03. Which scores
-move together? Similarity is not a test of whether a sentence is true.
+Only pooling changed. The same four candidates, scored once with the CLS vector and
+once with the mean of the token vectors, on one colour scale so the cells are
+comparable. Read the negation column: if it moves with the answer column, the score
+is measuring topic, not truth.
 """
 
-# 1. stack CLS and mean scores into one 2-row matrix so they share a colour scale
-semantic_scores = torch.cat(
-    (semantic_cls_scores, util.cos_sim(semantic_mean[:1], semantic_mean[1:]))
-)
+# 1. two pooling choices, one matrix: stack them so both rows share a colour scale
+semantic_mean_scores = util.cos_sim(semantic_mean[:1], semantic_mean[1:]).numpy()[0]
+semantic_scores = np.vstack([semantic_cls_scores, semantic_mean_scores])
 
-# 2. draw both pooling rows side by side on the same fitted colour range
-fig, ax = plt.subplots(figsize=(8, 3))
-sns.heatmap(
-    semantic_scores.numpy(),
-    annot=True,
-    xticklabels=semantic_labels,
-    yticklabels=["CLS", "mean"],
-    cmap="vlag",
-    ax=ax,
-)
-ax.set_title("Same sentences and weights, different pooling (fitted colour range)")
+# 2. draw both rows side by side on the same fitted colour range
+fig, ax = plt.subplots(figsize=(7.2, 2.6), constrained_layout=True)
+sns.heatmap(semantic_scores, annot=True, fmt=".3f", xticklabels=semantic_labels,
+            yticklabels=["CLS", "mean"], cmap="magma", ax=ax,
+            vmin=float(semantic_scores.min()), vmax=float(semantic_scores.max()),
+            cbar_kws={"label": "cosine"})
+ax.set_title("same weights, different pooling: what moved, and did the negation move with it?",
+             fontsize=9, loc="left")
 plt.show()
+
+print("CLS  :", dict(zip(semantic_labels, semantic_cls_scores.round(3))))
+print("mean :", dict(zip(semantic_labels, semantic_mean_scores.round(3))))
+print("negation minus answer, CLS:", round(float(semantic_cls_scores[2] - semantic_cls_scores[0]), 3),
+      "| mean:", round(float(semantic_mean_scores[2] - semantic_mean_scores[0]), 3))

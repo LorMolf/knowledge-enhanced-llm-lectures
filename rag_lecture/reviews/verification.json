@@ -1,0 +1,459 @@
+{
+  "status": "source-only accepted; lecture execution explicitly deferred",
+  "counts": {
+    "sections": 20,
+    "text_code_pairs": 65,
+    "static_svg_figures": 6,
+    "reachable_reference_urls": 25
+  },
+  "source_edition": "review-v3",
+  "reviewed_source_sha256": {
+    "01_dataset/00_overview.py": "5f0a631b69754604ad4fe7529afdd224e7f676a62084f492b15ad21eb36af3ca",
+    "01_dataset/01_load.py": "65ef2119de225c72b6cd7c68f8840c47ce36b69e8eabb1627621c5b7851b4c66",
+    "01_dataset/02_sample.py": "dfb7964f164485a877db912746cc559cf3a3f0f013b00a717e6d36daa2280a56",
+    "01_dataset/03_inspect.py": "6ad09124d77e73fddc37693434689794658be8fbff527f74ea21971f7f5a2c9a",
+    "02_naive_encoder/01_load.py": "1c14b2f9fd607102cc00d97f2d16a322235039e39109cded00a7dc551f7e8ec7",
+    "02_naive_encoder/02_document_length.py": "4802088ea04fc460bb4143750c3f8753af6d1ef3626863a54f7c0037f801c7f8",
+    "02_naive_encoder/03_encode.py": "eed742f7a03b01305af1b0565ac4ba418b925093291adc00e8e73c1a4dd60887",
+    "03_similarity/01_geometry.py": "48eb8828a20d870ef602fe33cde4f988bca09a4f9eebfda9577fe7c26080250e",
+    "03_similarity/02_heatmap.py": "c9d6c250b945ae044da9831f164280815de194ad35243e71626d33ff1653c867",
+    "03_similarity/03_rank.py": "bde4593a359b21a5a90dd7d80c5fe082e4799b3d60095dfc7bc6d05c8ce8a041",
+    "03_similarity/04_semantics.py": "acf2c52d260cc80c6456255ac450806bd8700660ca74281bb30e674fb2163c7a",
+    "03_similarity/05_ranked_scores.py": "223a0d3b13d9eff550bc706c2bd7c15c70114e4c295fdc574034ce54a7093231",
+    "04_embedding_atlas/01_explore.py": "dac733eba09c0367b0fa3f09a35ba7cb84330254d8a0b12cabf47eb4d511cea5",
+    "04_embedding_atlas/02_sample.py": "4ca6513c3ddf04e25e1609aa7cb5925b9f19ff27c1af6bfe35fe50b4afda1c3c",
+    "05_retrieval_evaluation/01_metrics.py": "a909ef9f5b16b20ff873e601ddb54413bcb799de467c78fd943d3bf0c4c328ef",
+    "05_retrieval_evaluation/02_plot.py": "3f284496df80abfb7afd46e532a396d8cd743279108efbad6f784a6c7fa7a551",
+    "06_pooling/01_modules.py": "3832edc359c1377042c0239bc8f116f567aa2486b4aa7a1816fdf37a22b62e7e",
+    "06_pooling/02_normalize.py": "ee6fc3b69fb3f410c88848188f810189024b4c7c9dd4e62c1de7af78d08e97cb",
+    "06_pooling/03_compare.py": "e2be9ab53be8545eb9a086a4b0fe26e47d57652abbb5e40e0a3c88944a4652f5",
+    "06_pooling/04_semantics.py": "ed67f2195dbaca42b6fb8c6a038819cb8266c214917458fc3b583860f518ff57",
+    "06_pooling/05_atlas.py": "59b8b80657f1fb839adc82b2d725e5bca9b7a047adfc13a93d309aebe285ac33",
+    "07_dense_models/01_bge.py": "8e1bba0febb30edb0feacaaab3fbe0a7b7416d4a1df6ff061c3d77fd9025b293",
+    "07_dense_models/02_bge_retrieve.py": "fe312188a5bc069390945d40ee67afcf54c47774310fbdc8906c0f2645275c28",
+    "07_dense_models/03_atlas.py": "9721e48e8ee31cc6e3104c265e5a93985046fe3f439a0e34b5377ba71f1fe351",
+    "07_dense_models/04_qwen.py": "30955f6dd450db06da5046d5fd4bcb5e4a554810bfae244338d1a1eaad404d5a",
+    "07_dense_models/05_qwen_ablation.py": "95c5549f2642273c97f8b25dfcb602f32f1a9ceadfdfcbb5588235baeb2b8f35",
+    "08_jina_tasks/01_jina.py": "4795c8cd4acb05b44653941a24a3e6cfb3905a24ee32733ec5619085c40b4561",
+    "08_jina_tasks/02_retrieval.py": "5ef55f0c9edfcf0cd25d3192750f5219e6350ed34c20c9ae4181a2d9ceb5d2ee",
+    "08_jina_tasks/03_view.py": "4257d0118af5664c7b60b7ab296bde43c092ca3b79cd8f132ac569d5ac75cc8b",
+    "08_jina_tasks/04_adapters.py": "3372022025a093c40e92489967a9e8f64ec391e652481492ae20cbd7c22c1028",
+    "08_jina_tasks/05_prefix.py": "a5f65ed5e8390acc4fc7483276e5ee22ad0944a7eea8b04d05ede89824101a08",
+    "08_jina_tasks/06_comparison.py": "7963f126155e335b6cc3a1b8d1bf486a65b55d3b4fe8525d2c113915302754eb",
+    "09_late_interaction/01_colbert.py": "b5119336d9840f7888c9426569bd493ee5945b8c10ac4e95f696ce442186eb02",
+    "09_late_interaction/02_encode.py": "3124526402a8c0305f587221e2b28e9ce9773a71feadd5114180059106e65ff0",
+    "09_late_interaction/03_maxsim.py": "7686b4ba47c71f81be4db48c8738e733f229c84a03bfceddfb5dc474d5ddab63",
+    "09_late_interaction/04_rank.py": "cdb6306547ea67dd125de7022ec52e86eb9329941fdbbb8abf8565a5f4583de3",
+    "09_late_interaction/05_reason.py": "f383eb67c3e9f5242c5c022501a967eeeab42f6f8ae1c93e86c21f468ce4932e",
+    "10_contrastive_learning/01_scores.py": "bc38f9bd7729fed94686d9cb359c6bfc49b7835740cf5af8dad9422176aa6e1d",
+    "10_contrastive_learning/02_triplets.py": "cc3600cb39db4a95895736f3f5fb30729da57df463f1f38b2ddea4eeeed57ccc",
+    "11_bge_finetuning/01_data.py": "9cce620bea32b8d0403e8cba542ca80da9d4de6e937ac690930eb7ba8d4059a7",
+    "11_bge_finetuning/02_train.py": "624f2ff67f151a1d46d88c8d26c0fb20647709c4d48c773a7ad3a8f3131000dd",
+    "11_bge_finetuning/03_comparison.py": "b83cb2868d09a0b3d57920fab8f7391aaec9d73bc5aa7a2a8ee66f1e2c37b950",
+    "11_bge_finetuning/04_evaluate.py": "d5214301ba57acd6ca9d8db6a8198de9ef36fc60d56a618dddec7a76f51243ff",
+    "11_bge_finetuning/05_atlas.py": "229d2b663ddabb54644180a5e8f3c03ed651fc0e506bd51a7072be12d3bde8cc",
+    "12_negative_mining/01_mine.py": "98616f6eac0c30139b6b4157d20d38c1626455c811a6011bdb3523014a29bfdf",
+    "12_negative_mining/02_prepare.py": "4c2e3c44e7a8abf4172c33135018db46db82d89ba4a856000c75c1ba75dd170e",
+    "12_negative_mining/03_train_compare.py": "60dfdf65f42904c84756eb1694afa4b2afae9a7fc9f843380da138d9880c936d",
+    "13_colbert_finetuning/01_train.py": "673e452591cc879cc081c9ad4c06254c54855f354653d2dc6c8598158507d123",
+    "13_colbert_finetuning/02_evaluate.py": "dbcb9887008af5ce7a2ed693dc87205047d2dd2e4e36b1c6d744a7297ab32a19",
+    "14_llama_server/01_server.py": "6cf255150f5f6582f500d757fc3a81b2a08603dfa3b4f07cd02bce0bd550fa1c",
+    "15_dense_rag/01_search.py": "91b224823243e32f256d3c2810cbf6bc6cdd437726f1d86eb32b031189a53526",
+    "15_dense_rag/02_compare.py": "47496080eda496edf5369aaf19fbc20c22b0f545c0d26af5e8dee6c0da8ec8ff",
+    "16_hybrid_retrieval/01_bm25.py": "5167da12f36e07996515e6e79dcd258f6e4cdeae33a71c9e393a1c4e0c47d50a",
+    "16_hybrid_retrieval/02_fusion.py": "c3813aa24322ea2def6bce2f2d7bff40b4210f8a7155922b14a5b11285d409fa",
+    "17_retrieval_tools/01_tool_call.py": "a8fead44b32408be69398a7c95552141790040a72fb44544abca9aa0d82212bd",
+    "17_retrieval_tools/02_tool_result.py": "ba353c241990560a62579036658989af4306fa7ed07c012d900777f0d60b396a",
+    "17_retrieval_tools/03_rewrite.py": "f4ff582260ce51bb709a9e7f7d4f04c6811a7a5f8599302e3fbcd3303395e69d",
+    "18_graph_construction/01_extract.py": "d990476548c6c01dff205ec1bd3e0029cc2f208884702a51ee1243a07ae00f6e",
+    "18_graph_construction/02_graph.py": "f14bb100943ea925fb65a86e000980da0c82347d7e1bbb896f30a35689742b00",
+    "19_hipporag/01_index.py": "ab2298b6461d0ad9cdb91623d5d25866527e12630241878b191494993adc070f",
+    "19_hipporag/02_run.py": "6fd2adef0536442ae8d14d96e16738bed3e9ec1ba14e9d2e6170f56cf3eb23e6",
+    "19_hipporag/03_retrieve.py": "480ee96595b502362f73d1670b2a829398d12050b962a95ae605ebf3414f00c9",
+    "20_comparison/01_results.py": "0c61d8342d7878a18b2022c29dd600d3dfa6bd3d5ff1c33e6eddce01d6aec521",
+    "20_comparison/02_metrics.py": "010c9a2c3789eac8f5a381065b0427d2abc21010a4f51901a1c5af1b21dfd887",
+    "20_comparison/03_agreement.py": "616cf61b4920f8229011a57ed10d07525f5a9dc2d3dafe8677c69150141a5cc4",
+    "assets/contrastive-learning.svg": "454c4dd617da9978551b799490e10276f394da49bfabea198431d246cff69f04",
+    "assets/dense-retrieval.svg": "ff0f499bbb1e838c6b9462852e84b001846bc8f7df7d97c7c8d73b1e3b7ce93e",
+    "assets/encoder-pooling.svg": "9ca9093c9841b386906498fd1a5a9928f10c464b4397f1000cc044041100f841",
+    "assets/graph-retrieval.svg": "2688ad992956fcbd329ac5562417b5063431136e63a9cdff119766caf1df4c18",
+    "assets/late-interaction.svg": "0be02bf0b5a05e031c6df4775b146ee228cefa0a81b4421b8667427cbef54903",
+    "assets/rag-pipeline.svg": "834a04bd59cf690c035657be34916b1d865a3bc1edd48e4546349816624a5b33",
+    "README.md": "b15080aca12beb360267e1596563b90dbde2a8300f1e9b210a6fdcbb7c9ff481",
+    "AGENTS.md": "027f841347be23de7ba73dd4a567fe7c1493ad718a126c8c09d0eb7122e36b91",
+    "pyproject.toml": "be5931ac6c4287e9788b7e68908a824dc53bb42cecf866df72d31a54ba0f8fd8",
+    "uv.lock": "2f39f0052638216d401a6de620a05d2941783d351fc1fdb52278bf58e7988905",
+    "install.sh": "b389791b824e635d4e0cf5e4100c679076885467d65b38eb30b4a224a2d44556",
+    "build_notebook.py": "2390182c8edcac63962475cb1b47838ef83979ec8adbb2d07b850b91529daadf",
+    "check_sources.py": "f02c9b03e369fea5c0a2fb9f3cbac6e4584bdf688a82a41a0f4fff355bcb68e5",
+    "hippo_backend/pyproject.toml": "cd422cd59d6f2025a622ef462777dd33a56d63c4f7357d588e69d09849fb683d",
+    "hippo_backend/uv.lock": "703047f5552aa58720fc85abaae6eaf2bfbb4c074acd3912f01c65c7c8514eb6",
+    "hippo_backend/run.py": "f769fc67adb54808047b517066224e734ab762af531e6307af99a42a60f38bfa"
+  },
+  "static_check": {
+    "command": "/Users/lorenzo/GitHub/knowledge-enhanced-llm-lectures/rag_lecture/.venv/bin/python /Users/lorenzo/GitHub/knowledge-enhanced-llm-lectures/rag_lecture/check_sources.py",
+    "cwd": "/Users/lorenzo",
+    "exit_code": 0,
+    "output": "All checks passed!\nAll checks passed!\nStatic checks passed: 20 sections, 65 pairs; lecture code NOT executed.\n"
+  },
+  "setup_check": {
+    "command": "bash /Users/lorenzo/GitHub/knowledge-enhanced-llm-lectures/rag_lecture/install.sh",
+    "cwd": "/Users/lorenzo",
+    "exit_code": 0,
+    "output": "Checked 215 packages in 73ms\nChecked 80 packages in 21ms\n"
+  },
+  "versions": {
+    "python": "3.12.9",
+    "main": {
+      "sentence-transformers": "6.2.0",
+      "transformers": "5.22.2",
+      "torch": "2.15.0",
+      "datasets": "4.8.5",
+      "embedding-atlas": "0.26.0",
+      "gliner2": "2.1.0",
+      "wandb": "0.31.0",
+      "ranx": "0.3.21",
+      "trectools": "0.0.50",
+      "huggingface-hub": "1.33.0"
+    },
+    "hippo_backend": {
+      "hipporag": "2.0.0a5",
+      "transformers": "4.45.2",
+      "torch": "2.5.1",
+      "sentence-transformers": "3.4.1"
+    }
+  },
+  "reviews": [
+    {
+      "role": "01_correctness",
+      "model": "gpt-6.1-terra",
+      "session_id": "local-8ae119b2395e3e3fb7e3dd63c67cbee83327c11004e6c86282d8eac330f41916",
+      "exit_code": 0,
+      "report": "reviews/01_correctness.md",
+      "report_sha256": "ee38ccb9e4e177f6bf2c6896624cc5b824c3a2a40811b419eef3c90ad444a6e5",
+      "result": "Appended the round-2 assessment to `reviews/01_correctness.md`. Verdict: source draft accepted with runtime checks deferred; no lecture or backend code was executed."
+    },
+    {
+      "role": "02_simplicity",
+      "model": "gpt-6.1-terra",
+      "session_id": "local-05ea27087876bd4d60aa2b9ff677c117fffe010f7be6efc0faefdb7e18fc2618",
+      "exit_code": 0,
+      "report": "reviews/02_simplicity.md",
+      "report_sha256": "374e6dc38d52190daaec32395bd296c50456d0e84d3a5f894b564c59c8e654ba",
+      "result": "Appended the round-2 assessment to `reviews/02_simplicity.md`. Verdict: **source draft accepted with explicitly deferred runtime checks**."
+    },
+    {
+      "role": "03_teaching",
+      "model": "gpt-6.1-terra",
+      "session_id": "local-02c501e729a47959f0086c7198d7ac6fa0f1cb709a6bab029321e2c2c58fdd73",
+      "exit_code": 0,
+      "report": "reviews/03_teaching.md",
+      "report_sha256": "cfab1f5d48ee11cbe69ce295e2f83c8746688c44d4ecb5afa604a16d76aa160a",
+      "result": "Round 2 appended to `rag_lecture/reviews/03_teaching.md`.\n\nVerdict: **source draft accepted with runtime checks deferred**. No lecture or backend code was executed."
+    }
+  ],
+  "links": [
+    {
+      "url": "https://huggingface.co/datasets/enelpol/rag-mini-bioasq",
+      "status": 200,
+      "resolved": "https://huggingface.co/datasets/enelpol/rag-mini-bioasq",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "01_dataset/01_load.py"
+      ]
+    },
+    {
+      "url": "https://huggingface.co/microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext",
+      "status": 200,
+      "resolved": "https://huggingface.co/microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "02_naive_encoder/01_load.py"
+      ]
+    },
+    {
+      "url": "https://sbert.net/examples/sentence_transformer/applications/semantic-search/README.html",
+      "status": 206,
+      "resolved": "https://sbert.net/examples/sentence_transformer/applications/semantic-search/README.html",
+      "content_type": "text/html",
+      "bytes_inspected": 4096,
+      "files": [
+        "03_similarity/03_rank.py"
+      ]
+    },
+    {
+      "url": "https://apple.github.io/embedding-atlas/widget.html",
+      "status": 206,
+      "resolved": "https://apple.github.io/embedding-atlas/widget.html",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "04_embedding_atlas/01_explore.py"
+      ]
+    },
+    {
+      "url": "https://sbert.net/docs/package_reference/sentence_transformer/evaluation.html",
+      "status": 206,
+      "resolved": "https://sbert.net/docs/package_reference/sentence_transformer/evaluation.html",
+      "content_type": "text/html",
+      "bytes_inspected": 4096,
+      "files": [
+        "05_retrieval_evaluation/01_metrics.py"
+      ]
+    },
+    {
+      "url": "https://sbert.net/docs/package_reference/sentence_transformer/modules.html",
+      "status": 206,
+      "resolved": "https://sbert.net/docs/package_reference/sentence_transformer/modules.html",
+      "content_type": "text/html",
+      "bytes_inspected": 4096,
+      "files": [
+        "06_pooling/01_modules.py"
+      ]
+    },
+    {
+      "url": "https://huggingface.co/BAAI/bge-base-en-v1.5",
+      "status": 200,
+      "resolved": "https://huggingface.co/BAAI/bge-base-en-v1.5",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "07_dense_models/01_bge.py"
+      ]
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
+      "status": 200,
+      "resolved": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "07_dense_models/04_qwen.py"
+      ]
+    },
+    {
+      "url": "https://huggingface.co/jinaai/jina-embeddings-v5-text-small",
+      "status": 200,
+      "resolved": "https://huggingface.co/jinaai/jina-embeddings-v5-text-small",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "08_jina_tasks/01_jina.py"
+      ]
+    },
+    {
+      "url": "https://huggingface.co/colbert-ir/colbertv2.0",
+      "status": 200,
+      "resolved": "https://huggingface.co/colbert-ir/colbertv2.0",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "09_late_interaction/01_colbert.py"
+      ]
+    },
+    {
+      "url": "https://sbert.net/docs/multi_vector_encoder/usage/usage.html",
+      "status": 206,
+      "resolved": "https://sbert.net/docs/multi_vector_encoder/usage/usage.html",
+      "content_type": "text/html",
+      "bytes_inspected": 4096,
+      "files": [
+        "09_late_interaction/01_colbert.py"
+      ]
+    },
+    {
+      "url": "https://huggingface.co/lightonai/Reason-ModernColBERT",
+      "status": 200,
+      "resolved": "https://huggingface.co/lightonai/Reason-ModernColBERT",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "09_late_interaction/05_reason.py"
+      ]
+    },
+    {
+      "url": "https://sbert.net/docs/package_reference/sentence_transformer/losses.html#sentence_transformers.sentence_transformer.losses.MultipleNegativesRankingLoss",
+      "status": 206,
+      "resolved": "https://sbert.net/docs/package_reference/sentence_transformer/losses.html#sentence_transformers.sentence_transformer.losses.MultipleNegativesRankingLoss",
+      "content_type": "text/html",
+      "bytes_inspected": 4096,
+      "files": [
+        "10_contrastive_learning/01_scores.py"
+      ]
+    },
+    {
+      "url": "https://sbert.net/docs/package_reference/sentence_transformer/trainer.html",
+      "status": 206,
+      "resolved": "https://sbert.net/docs/package_reference/sentence_transformer/trainer.html",
+      "content_type": "text/html",
+      "bytes_inspected": 4096,
+      "files": [
+        "11_bge_finetuning/02_train.py"
+      ]
+    },
+    {
+      "url": "https://docs.wandb.ai/models/support/run_wandb_offline",
+      "status": 200,
+      "resolved": "https://docs.coreweave.com/support/models/articles/how-do-i-run-wandb-offline",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "11_bge_finetuning/02_train.py"
+      ]
+    },
+    {
+      "url": "https://sbert.net/docs/package_reference/util/hard_negatives.html",
+      "status": 206,
+      "resolved": "https://sbert.net/docs/package_reference/util/hard_negatives.html",
+      "content_type": "text/html",
+      "bytes_inspected": 4096,
+      "files": [
+        "12_negative_mining/02_prepare.py"
+      ]
+    },
+    {
+      "url": "https://sbert.net/docs/multi_vector_encoder/training_overview.html",
+      "status": 206,
+      "resolved": "https://sbert.net/docs/multi_vector_encoder/training_overview.html",
+      "content_type": "text/html",
+      "bytes_inspected": 4096,
+      "files": [
+        "13_colbert_finetuning/01_train.py"
+      ]
+    },
+    {
+      "url": "https://sbert.net/docs/package_reference/multi_vector_encoder/losses.html",
+      "status": 206,
+      "resolved": "https://sbert.net/docs/package_reference/multi_vector_encoder/losses.html",
+      "content_type": "text/html",
+      "bytes_inspected": 4096,
+      "files": [
+        "13_colbert_finetuning/01_train.py"
+      ]
+    },
+    {
+      "url": "https://huggingface.co/LiquidAI/LFM3-1.7B-GGUF",
+      "status": 200,
+      "resolved": "https://huggingface.co/LiquidAI/LFM3-1.7B-GGUF",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "14_llama_server/01_server.py"
+      ]
+    },
+    {
+      "url": "https://huggingface.co/LiquidAI/LFM3-1.7B-GGUF/blob/main/LICENSE",
+      "status": 200,
+      "resolved": "https://huggingface.co/LiquidAI/LFM3-1.7B-GGUF/blob/main/LICENSE",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "14_llama_server/01_server.py"
+      ]
+    },
+    {
+      "url": "https://github.com/dorianbrown/rank_bm25",
+      "status": 206,
+      "resolved": "https://github.com/dorianbrown/rank_bm25",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "16_hybrid_retrieval/01_bm25.py"
+      ]
+    },
+    {
+      "url": "https://amenra.github.io/ranx/fusion/",
+      "status": 206,
+      "resolved": "https://amenra.github.io/ranx/fusion/",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "16_hybrid_retrieval/02_fusion.py"
+      ]
+    },
+    {
+      "url": "https://huggingface.co/fastino/gliner2.5-base-v1",
+      "status": 200,
+      "resolved": "https://huggingface.co/fastino/gliner2.5-base-v1",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "18_graph_construction/01_extract.py"
+      ]
+    },
+    {
+      "url": "https://github.com/OSU-NLP-Group/HippoRAG/tree/d5c8329422e0a0b834a15874545cb6a74b4f9b26",
+      "status": 206,
+      "resolved": "https://github.com/OSU-NLP-Group/HippoRAG/tree/d5c8329422e0a0b834a15874545cb6a74b4f9b26",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "19_hipporag/01_index.py"
+      ]
+    },
+    {
+      "url": "https://github.com/joaopalotti/trectools",
+      "status": 206,
+      "resolved": "https://github.com/joaopalotti/trectools",
+      "content_type": "text/html; charset=utf-8",
+      "bytes_inspected": 4096,
+      "files": [
+        "20_comparison/03_agreement.py"
+      ]
+    }
+  ],
+  "figure_proofs": [
+    {
+      "source": "assets/contrastive-learning.svg",
+      "source_sha256": "454c4dd617da9978551b799490e10276f394da49bfabea198431d246cff69f04",
+      "image": "reviews/figures/contrastive-learning.png",
+      "image_sha256": "5289f0d1f8e0905248b1622baad2b078e8d0e824b7e8dc7de6a8c0a6157bd421",
+      "render_transform": "outer viewport width 760; original viewBox and drawing retained; alpha on white; margin crop"
+    },
+    {
+      "source": "assets/dense-retrieval.svg",
+      "source_sha256": "ff0f499bbb1e838c6b9462852e84b001846bc8f7df7d97c7c8d73b1e3b7ce93e",
+      "image": "reviews/figures/dense-retrieval.png",
+      "image_sha256": "06b835023573cfb7bec0a5d76796621b1d83f572eb9957cceb8973013e800d14",
+      "render_transform": "outer viewport width 760; original viewBox and drawing retained; alpha on white; margin crop"
+    },
+    {
+      "source": "assets/encoder-pooling.svg",
+      "source_sha256": "9ca9093c9841b386906498fd1a5a9928f10c464b4397f1000cc044041100f841",
+      "image": "reviews/figures/encoder-pooling.png",
+      "image_sha256": "2e59605258734dbd9e0f676c2281a021a2fcd341113221ddb118971169bb8870",
+      "render_transform": "outer viewport width 760; original viewBox and drawing retained; alpha on white; margin crop"
+    },
+    {
+      "source": "assets/graph-retrieval.svg",
+      "source_sha256": "2688ad992956fcbd329ac5562417b5063431136e63a9cdff119766caf1df4c18",
+      "image": "reviews/figures/graph-retrieval.png",
+      "image_sha256": "fed23c528aba3fea3f147825381df00ac9bb23ea9bf93b1117e49b63156cad63",
+      "render_transform": "outer viewport width 760; original viewBox and drawing retained; alpha on white; margin crop"
+    },
+    {
+      "source": "assets/late-interaction.svg",
+      "source_sha256": "0be02bf0b5a05e031c6df4775b146ee228cefa0a81b4421b8667427cbef54903",
+      "image": "reviews/figures/late-interaction.png",
+      "image_sha256": "e8b0ac7d02c659e29e5296a5f4088b0ca2286a45973a7ddd4bfb089b317daf9a",
+      "render_transform": "outer viewport width 760; original viewBox and drawing retained; alpha on white; margin crop"
+    },
+    {
+      "source": "assets/rag-pipeline.svg",
+      "source_sha256": "834a04bd59cf690c035657be34916b1d865a3bc1edd48e4546349816624a5b33",
+      "image": "reviews/figures/rag-pipeline.png",
+      "image_sha256": "30c256de95218b1d8926ca3aa7c96f22d8a59f06c8c5b28e93dc9b74927c5f0c",
+      "render_transform": "outer viewport width 760; original viewBox and drawing retained; alpha on white; margin crop"
+    }
+  ],
+  "not_performed": [
+    "notebook assembly",
+    "lecture cell execution",
+    "model loading or training",
+    "llama-server startup",
+    "HippoRAG indexing/retrieval",
+    "runtime benchmark or answer evaluation"
+  ]
+}

@@ -1,0 +1,12 @@
+[project]
+name = "rag-lecture-hipporag"
+version = "0.1.0"
+description = "Isolated HippoRAG2 backend for the RAG lecture"
+requires-python = ">=3.12,<3.13"
+dependencies = ["hipporag[transformers-embedding]", "sentence-transformers>=3,<4"]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+hipporag = { git = "https://github.com/OSU-NLP-Group/HippoRAG", rev = "d5c8329422e0a0b834a15874545cb6a74b4f9b26" }

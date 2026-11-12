@@ -38,8 +38,10 @@ fig, ax = plt.subplots(figsize=(6.6, 3.2), constrained_layout=True)
 ax.plot(KS, [score(naive_metrics, "ndcg", k) for k in KS], marker="o", label="PubMedBERT CLS")
 ax.plot(KS, [score(ideal_metrics, "ndcg", k) for k in KS], linestyle="--", color="gray",
         label="ideal ranking")
-ax.set(xticks=KS, xlabel="cutoff k", ylabel="nDCG@k", ylim=(0, 1))
+# ylim leaves headroom: the ideal line sits exactly at 1.0 and would hide under the spine.
+ax.set(xticks=KS, xlabel="cutoff k", ylabel="nDCG@k", ylim=(0, 1.08))
 ax.legend(frameon=False, fontsize=8)
+ax.annotate("ideal", (KS[-1], 1.0), textcoords="offset points", xytext=(-6, 4), fontsize=7, color="gray")
 ax.set_title("how much of the achievable nDCG this ranking reaches", fontsize=9, loc="left")
 plt.show()
 

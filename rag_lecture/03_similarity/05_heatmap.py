@@ -34,16 +34,16 @@ fig, ax = plt.subplots(figsize=(7.2, 2.8), constrained_layout=True)
 y = np.arange(len(table))
 ax.hlines(y, 1, table["labelled rank"], color="#C9CFD8", linewidth=2)
 ax.scatter(table["labelled rank"], y, s=60, color="#9D2235", zorder=3, label="labelled paper")
-ax.set_yticks(y, table.index, fontsize=8)
-ax.set(xlabel="rank of the labelled paper among 2,000 papers", xscale="log",
-       xticks=[1, 2, 5, 10, 50, 200, 1000], xlim=(0.9, 2600))
+ax.set_yticks(y, [f"Q{i}" for i in range(1, len(table) + 1)], fontsize=8)
+ax.set(xlabel=f"rank of the labelled paper among {len(corpus_ids):,} papers", xscale="log",
+       xticks=[1, 10, 100, 1000], xlim=(0.9, len(corpus_ids) * 1.3))
 ax.legend(frameon=False, fontsize=8, loc="lower right")
 ax.set_title("how deep the first right paper sits, five questions", fontsize=9, loc="left")
 plt.show()
 
 # 3. the worst row in words: the question, the labelled paper, and what beat it
 worst = table["labelled rank"].idxmax()
-print("worst question:", worst, "|", queries[worst][:110])
+print(f"Q{list(table.index).index(worst) + 1} ({worst}):", queries[worst][:110])
 print("labelled paper:", corpus[sorted(relevant_docs[worst])[0]][:200].replace("\n", " "))
 rank1_id = table.loc[worst, "rank-1 paper"]
 print("what came first:", corpus[rank1_id][:200].replace("\n", " "))

@@ -30,15 +30,18 @@ table["gap to rank 1"] = (table["score of rank 1"] - table["score of labelled"])
 display(table)
 
 # 2. one dot per question on a log rank axis: 1 is perfect, 1000 is hopeless
-fig, ax = plt.subplots(figsize=(7.2, 2.8), constrained_layout=True)
-y = np.arange(len(table))
-ax.hlines(y, 1, table["labelled rank"], color="#C9CFD8", linewidth=2)
-ax.scatter(table["labelled rank"], y, s=60, color="#9D2235", zorder=3, label="labelled paper")
-ax.set_yticks(y, [f"Q{i}" for i in range(1, len(table) + 1)], fontsize=8)
-ax.set(xlabel=f"rank of the labelled paper among {len(corpus_ids):,} papers", xscale="log",
-       xticks=[1, 10, 100, 1000], xlim=(0.9, len(corpus_ids) * 1.3))
-ax.legend(frameon=False, fontsize=8, loc="lower right")
-ax.set_title("how deep the first right paper sits, five questions", fontsize=9, loc="left")
+fig, ax = plt.subplots(constrained_layout=True)
+ranks = table["labelled rank"].to_numpy(float)
+rng = np.random.default_rng(SEED)
+ax.scatter(ranks, rng.uniform(-0.16, 0.16, len(ranks)), s=34, color=OURS,
+           alpha=0.9, edgecolor="white", linewidth=0.6, zorder=3)
+ax.axvline(np.median(ranks), color=ACCENT, linestyle=":", linewidth=1, zorder=2)
+ax.annotate(f"median {int(np.median(ranks)):,}", (np.median(ranks), 0.26),
+            textcoords="offset points", xytext=(4, 0), fontsize=7, color=ACCENT)
+ax.set(xscale="log", xlim=(0.85, len(corpus_ids) * 1.4), ylim=(-0.34, 0.34),
+       xticks=[1, 10, 100, 1000], yticks=[])
+panel(ax, f"rank of the labelled paper among {len(corpus_ids):,}", "",
+      "where the first right paper sits, one dot per question\nlog scale; the dotted line is the median")
 plt.show()
 
 # 3. the worst row in words: the question, the labelled paper, and what beat it

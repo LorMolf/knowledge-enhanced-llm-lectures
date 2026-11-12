@@ -1,15 +1,12 @@
 r"""
 ### What does the cutoff change?
 
-Plot all six observed effectiveness measures at the same cutoffs for the initial
-run, with a dashed line for the best any ranking could reach on these labels. The
-dashed curve is an ideal ordering scored by the same evaluator: labelled papers
-first, then the rest. Precision and MAP sit far below it because most questions
-have only one or two labelled papers, so precision at ten is capped near 0.1.
-Which metric is measuring the retriever, and which is measuring the labels?
+nDCG at four cutoffs, with a bootstrap band over the test questions: the band is the honest
+part, because 32 questions cannot resolve a difference smaller than the band's width. The
+dashed line is the best any ranking could reach on these labels — labelled papers first,
+then the rest — scored by the same evaluator. The gap between the two curves is how much
+retrieval quality is still on the table; the table underneath says the same in numbers.
 """
-
-import matplotlib.pyplot as plt
 
 # 1. Build the ideal ranking: labelled papers first, then everything else.
 ideal_rankings = {}
@@ -27,28 +24,46 @@ ideal_metrics = evaluator.compute_metrics(
     [ideal_rankings[qid] for qid in evaluator.queries_ids]
 )
 
-# 3. evaluate_run hands back a flat row, compute_metrics nests {metric@k: {k: value}};
-#    read either shape so the cell does not depend on which producer filled it.
+
+# 3. evaluate_run returns a flat row, compute_metrics nests {metric@k: {k: value}}.
 def score(metrics, metric, k):
     return metrics[f"{metric}@{k}"] if f"{metric}@{k}" in metrics else metrics[f"{metric}@k"][k]
 
 
-# 4. One panel: nDCG at each cutoff, observed against the best possible ranking.
-fig, ax = plt.subplots(figsize=(6.6, 3.2), constrained_layout=True)
-ax.plot(KS, [score(naive_metrics, "ndcg", k) for k in KS], marker="o", label="PubMedBERT CLS")
-ax.plot(KS, [score(ideal_metrics, "ndcg", k) for k in KS], linestyle="--", color="gray",
+# 4. Per-question nDCG@k, so the band is over questions and not over one aggregate.
+def ndcg_at_k(hits, relevant, k):
+    gains = [1 / np.log2(rank + 1) for rank, hit in enumerate(hits[:k], 1)
+             if hit["corpus_id"] in relevant]
+    ideal_gains = [1 / np.log2(rank + 1) for rank in range(1, min(k, len(relevant)) + 1)]
+    return sum(gains) / sum(ideal_gains) if ideal_gains else 0.0
+
+
+per_question = {
+    k: np.array([ndcg_at_k(all_rankings["PubMedBERT CLS"][qid], relevant_docs[qid], k)
+                 for qid in query_ids])
+    for k in KS
+}
+
+# 5. The curve, with the band and the ceiling on the same axes.
+fig, ax = plt.subplots(constrained_layout=True)
+means = np.array([per_question[k].mean() for k in KS])
+low = np.array([bootstrap_ci(per_question[k], seed=SEED)[1] for k in KS])
+high = np.array([bootstrap_ci(per_question[k], seed=SEED)[2] for k in KS])
+ax.fill_between(KS, low, high, color=OURS, alpha=0.16, linewidth=0)
+ax.plot(KS, means, color=OURS, marker="o", label="PubMedBERT CLS")
+ax.plot(KS, [score(ideal_metrics, "ndcg", k) for k in KS], color=BASELINE, linestyle="--",
         label="ideal ranking")
-# ylim leaves headroom: the ideal line sits exactly at 1.0 and would hide under the spine.
-ax.set(xticks=KS, xlabel="cutoff k", ylabel="nDCG@k", ylim=(0, 1.08))
-ax.legend(frameon=False, fontsize=8)
-ax.annotate("ideal", (KS[-1], 1.0), textcoords="offset points", xytext=(-6, 4), fontsize=7, color="gray")
-ax.set_title("how much of the achievable nDCG this ranking reaches", fontsize=9, loc="left")
+ax.annotate("ideal", (KS[-1], 1.0), textcoords="offset points", xytext=(-4, 6),
+            fontsize=7, color=BASELINE, ha="right")
+ax.annotate("PubMedBERT CLS", (KS[-1], means[-1]), textcoords="offset points", xytext=(-4, -12),
+            fontsize=7, color=OURS, ha="right")
+ax.set(xticks=KS, ylim=(0, 1.08))
+panel(ax, "cutoff k", "nDCG@k", "retrieval quality against the best achievable ranking\n95% bootstrap band over 32 questions")
+ax.legend(loc="lower right")
 plt.show()
 
-# 5. the other metrics are numbers, not panels: observed against the ceiling at k=10.
-comparison = pd.DataFrame({
-    "metric": ["accuracy@1", "recall@10", "ndcg@10", "map@10"],
-})
+# 6. The other metrics are numbers, not panels: observed against the ceiling at k=10.
+comparison = pd.DataFrame({"metric": ["accuracy@1", "recall@10", "ndcg@10", "map@10"]})
 comparison["observed"] = [round(score(naive_metrics, m.split("@")[0], 10), 3) for m in comparison.metric]
 comparison["ideal"] = [round(score(ideal_metrics, m.split("@")[0], 10), 3) for m in comparison.metric]
 comparison["gap"] = (comparison["ideal"] - comparison["observed"]).round(3)

@@ -50,6 +50,10 @@ display(requested)
 
 # 4. Guard: if no tool call came back, the server template is likely wrong.
 if not requested.get("tool_calls"):
-    raise ValueError(
-        "Model did not request the retrieval tool; inspect its response and server template"
-    )
+    if SERVER_READY:
+        raise ValueError(
+            "Model did not request the retrieval tool; inspect its response and server template"
+        )
+    # no local model: an empty call list keeps the section readable and the cells after it running
+    print("no local model: the stub cannot request a tool, so the next cells have nothing to execute")
+    requested["tool_calls"] = []

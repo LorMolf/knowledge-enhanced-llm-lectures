@@ -1,14 +1,16 @@
 r"""
 ### Similar words, different meanings
 
-These sentences are **constructed examples**, not biomedical findings. The
-first two candidate sentences express the same relation; the third negates it,
-and the fourth shares words without answering the question. Let's score them
-with the actual CLS encoder. Does a high cosine score distinguish an answer
-from a negation or a shared-keyword distractor? Keep these texts for pooling.
+Four constructed candidates for one question: the answer, a paraphrase, a negation, and a
+sentence that shares the words without answering. They are toy sentences on purpose — the
+point is the score, not the biology. Read the numbers: an encoder that scores the negation
+as high as the answer is measuring topic, not truth.
 """
 
-# 1. fixed candidate sentences: answer, paraphrase, negation, shared-keyword distractor
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 1. one question, four candidates that differ in meaning but not in vocabulary
 semantic_texts = [
     "Which protein does compound X bind?",
     "Compound X binds protein Y.",
@@ -18,21 +20,19 @@ semantic_texts = [
 ]
 semantic_labels = ["answer", "paraphrase", "negation", "shared words"]
 
-# 2. encode every sentence with the CLS encoder so we can compare vectors
 semantic_cls = encode_biomed(semantic_texts, naive_model, naive_tokenizer)
+scores = util.cos_sim(semantic_cls[:1], semantic_cls[1:]).numpy()[0]
 
-# 3. cosine of the question against each candidate
-semantic_cls_scores = util.cos_sim(semantic_cls[:1], semantic_cls[1:])
-
-# 4. draw the score matrix so the four candidates sit side by side
-fig, ax = plt.subplots(figsize=(8, 2))
-sns.heatmap(
-    semantic_cls_scores.numpy(),
-    annot=True,
-    xticklabels=semantic_labels,
-    yticklabels=["question"],
-    cmap="vlag",
-    ax=ax,
-)
-ax.set_title("Observed CLS scores, colour range fitted to these five sentences")
+# 2. the four scores as bars: one scale, values printed, no colour legend to decode
+fig, ax = plt.subplots(figsize=(6.4, 2.8), constrained_layout=True)
+order = scores.argsort()[::-1]
+colours = ["#2E7D32" if semantic_labels[i] in ("answer", "paraphrase") else "#9D2235" for i in order]
+ax.barh([semantic_labels[i] for i in order], scores[order], color=colours, height=0.6)
+for y, value in enumerate(scores[order]):
+    ax.text(value + 0.01, y, f"{value:.3f}", va="center", fontsize=8)
+ax.set(xlim=(0, 1), xlabel="cosine to the question", ylabel="")
+ax.set_title("green: the relation holds | red: words without the relation", fontsize=9, loc="left")
 plt.show()
+
+for label, text, score in sorted(zip(semantic_labels, semantic_texts[1:], scores), key=lambda row: -row[2]):
+    print(f"{score:.3f}  {label:13} {text}")

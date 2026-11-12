@@ -61,7 +61,11 @@ def chat_full(messages, reasoning=True):
     return response.json()
 
 
-# 4. what the server believes it is serving
-served = requests.get("http://127.0.0.1:8080/props", timeout=10).json()
-print("served model:", served.get("model_alias"), "| context:", served.get("default_generation_settings", {}).get("n_ctx"))
+# 4. what the server believes it is serving, when there is one to ask
+if SERVER_READY:
+    served = requests.get(f"{LLM_URL}/props", timeout=10).json()
+    print("served model:", served.get("model_alias"),
+          "| context:", served.get("default_generation_settings", {}).get("n_ctx"))
+else:
+    print("no server to ask: section 14's binary did not start, so the client returns stubs")
 print("reply fields: content, reasoning_content, usage")

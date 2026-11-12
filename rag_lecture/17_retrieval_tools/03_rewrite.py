@@ -23,7 +23,13 @@ if not isinstance(rewrite_content, str) or not rewrite_content.strip():
     raise ValueError("Model did not return a nonempty text rewrite")
 rewrite = rewrite_content.strip()
 
-# 3. reuse the first tool search's k so the two retrievals are comparable
+# 3. without a local model no tool call happened: fall back to the user's own question
+if not first_tool_searches:
+    print("no tool call happened (no local model): using the question itself as the first query")
+    first_tool_searches = [{"query": example_question, "k": 5,
+                            "hits": search_papers(example_question, k=5)}]
+
+# 4. reuse the first tool search's k so the two retrievals are comparable
 first_tool_search = first_tool_searches[0]
 second_retrieval = search_papers(rewrite, k=first_tool_search["k"])
 

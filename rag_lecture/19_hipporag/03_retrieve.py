@@ -13,7 +13,11 @@ not by themselves establish that a question requires multi-hop reasoning.
 """
 
 # 1. validate the backend response: one row per query, no duplicates, known modes
-hippo_records = hippo_result["results"]
+if hippo_result is None:
+    hippo_records = []
+    print("skipped: no HippoRAG index, the retrieval comparison below keeps its other rows.")
+else:
+    hippo_records = hippo_result["results"]
 if (
     len(hippo_records) != len(query_ids)
     or len({row["id"] for row in hippo_records}) != len(hippo_records)

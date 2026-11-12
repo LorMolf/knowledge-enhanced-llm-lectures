@@ -30,6 +30,8 @@ def main() -> int:
     ap.add_argument("--skip-shell", action="store_true")
     ap.add_argument("--keep-going", action="store_true", help="collect every failure instead of stopping")
     ap.add_argument("--notebook", default="RAG_Lecture.ipynb")
+    ap.add_argument("--stop-after", type=int, default=0, help="stop after this many code cells")
+    ap.add_argument("--save-figs", action="store_true", help="write every open figure to figs/cellNNN.png")
     ap.add_argument("--mem-fraction", type=float, default=0.0,
                     help="cap the process to this share of total GPU memory, to imitate a smaller card")
     args = ap.parse_args()
@@ -69,6 +71,9 @@ def main() -> int:
                     break
             continue
 
+        if args.stop_after and i > args.stop_after:
+            break
+
         try:
             exec(compile(src, f"cell{i}", "exec"), ns)
             try:
@@ -79,6 +84,14 @@ def main() -> int:
                     head_mem = ""
             except Exception:
                 head_mem = ""
+            if args.save_figs:
+                import matplotlib
+                matplotlib.use("Agg")
+                import matplotlib.pyplot as plt
+                Path("figs").mkdir(exist_ok=True)
+                for number in plt.get_fignums():
+                    plt.figure(number).savefig(f"figs/cell{i:03d}.png", dpi=110, bbox_inches="tight")
+                plt.close("all")
             print(f"CELL {i:03} OK   {head}{head_mem}", flush=True)
             report.append({"cell": i, "status": "OK", "head": head})
         except Exception:

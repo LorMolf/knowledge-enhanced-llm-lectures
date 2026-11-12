@@ -21,7 +21,7 @@ def score_one(method, model):
         [val_hits[qid] for qid in validation_evaluator.queries_ids]
     )
     # same flat shape evaluate_run returns for test, so one key style reads both
-    val_metrics = {f"{m}@{k}": float(v) for m, vals in raw_val.items() for k, v in vals.items()}
+    val_metrics = {f"{m.replace('@k', '')}@{k}": float(v) for m, vals in raw_val.items() for k, v in vals.items()}
 
     # 2. test: same encoding path, scored into the shared ledger
     test_vectors = model.encode(

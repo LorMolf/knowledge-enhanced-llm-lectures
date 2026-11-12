@@ -30,11 +30,19 @@ def main() -> int:
     ap.add_argument("--skip-shell", action="store_true")
     ap.add_argument("--keep-going", action="store_true", help="collect every failure instead of stopping")
     ap.add_argument("--notebook", default="RAG_Lecture.ipynb")
+    ap.add_argument("--mem-fraction", type=float, default=0.0,
+                    help="cap the process to this share of total GPU memory, to imitate a smaller card")
     args = ap.parse_args()
 
     nb = nbformat.reads(Path(args.notebook).read_text(), as_version=4)
     cells = [c for c in nb.cells if c.cell_type == "code"]
     print(f"{len(cells)} code cells, starting at {args.start}", flush=True)
+
+    if args.mem_fraction:
+        import torch
+        total = torch.cuda.get_device_properties(0).total_memory / 1e9
+        torch.cuda.set_per_process_memory_fraction(args.mem_fraction, 0)
+        print(f"memory cap: {args.mem_fraction:.0%} of {total:.1f} GB = {total * args.mem_fraction:.1f} GB", flush=True)
 
     ns = {"__name__": "__main__", "display": display}
     report, failures = [], 0
@@ -63,7 +71,15 @@ def main() -> int:
 
         try:
             exec(compile(src, f"cell{i}", "exec"), ns)
-            print(f"CELL {i:03} OK   {head}", flush=True)
+            try:
+                import torch
+                if torch.cuda.is_available():
+                    head_mem = f" [{torch.cuda.memory_allocated() / 1e9:.1f} GB]"
+                else:
+                    head_mem = ""
+            except Exception:
+                head_mem = ""
+            print(f"CELL {i:03} OK   {head}{head_mem}", flush=True)
             report.append({"cell": i, "status": "OK", "head": head})
         except Exception:
             tb = traceback.format_exc()

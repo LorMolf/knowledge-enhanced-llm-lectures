@@ -18,7 +18,7 @@ for method, dataset in negative_datasets.items():
 
     # 2. keep what the comparison needs, and log the validation curve
     loss_histories[method] = trainer.state.log_history
-    val_scores[method] = {"ndcg@10": val_metrics["ndcg@10"], "mrr@10": val_metrics["mrr@k"][10]}
+    val_scores[method] = {"ndcg@10": val_metrics["ndcg@10"], "mrr@10": val_metrics["mrr@10"]}
 
     # 3. the row and the loss curve, side by side for this method
     display({"method": method, "validation": val_metrics, "test": test_metrics})

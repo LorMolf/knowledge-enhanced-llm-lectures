@@ -17,9 +17,11 @@ def score_one(method, model):
         list(val_queries.values()), prompt=BGE_QUERY_PROMPT, convert_to_tensor=True, device="cuda"
     ).cpu()
     val_hits = rank_dense(val_vectors, docs, qids=list(val_queries))
-    val_metrics = validation_evaluator.compute_metrics(
+    raw_val = validation_evaluator.compute_metrics(
         [val_hits[qid] for qid in validation_evaluator.queries_ids]
     )
+    # same flat shape evaluate_run returns for test, so one key style reads both
+    val_metrics = {f"{m}@{k}": float(v) for m, vals in raw_val.items() for k, v in vals.items()}
 
     # 2. test: same encoding path, scored into the shared ledger
     test_vectors = model.encode(

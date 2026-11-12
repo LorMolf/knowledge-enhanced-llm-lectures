@@ -10,6 +10,7 @@ separate for the whole corpus, not for one lucky question.
 import matplotlib.pyplot as plt
 import pandas as pd
 
+# One curve per run: the share in the top k, at the four cutoffs that matter.
 KS_SHOWN = (1, 3, 5, 10)
 curves = pd.DataFrame(
     {run: [(first_rank[run] <= k).mean() for k in KS_SHOWN] for run in first_rank.columns},

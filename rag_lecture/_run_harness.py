@@ -32,7 +32,7 @@ def main() -> int:
     ap.add_argument("--notebook", default="RAG_Lecture.ipynb")
     args = ap.parse_args()
 
-    nb = nbformat.read(Path(args.notebook).read_text(), as_version=4)
+    nb = nbformat.reads(Path(args.notebook).read_text(), as_version=4)
     cells = [c for c in nb.cells if c.cell_type == "code"]
     print(f"{len(cells)} code cells, starting at {args.start}", flush=True)
 

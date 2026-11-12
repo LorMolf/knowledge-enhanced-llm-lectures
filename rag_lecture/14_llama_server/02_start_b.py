@@ -19,14 +19,16 @@ from huggingface_hub import hf_hub_download
 if not server_ready():
     model_path = hf_hub_download(LLM_REPO, LLM_FILE, revision=LLM_REVISION)
     log = open("llama-server.log", "wb")
-    subprocess.Popen(
+    server = subprocess.Popen(
         [sys.executable, "-m", "llama_cpp.server", *server_args(model_path)],
         stdout=log,
         stderr=subprocess.STDOUT,
         start_new_session=True,  # survives the notebook process
     )
+    # Poll the route, and stop as soon as the process dies: a missing module exits in
+    # a second, and waiting the full ten minutes only hides the reason.
     for _ in range(300):
-        if server_ready():
+        if server_ready() or server.poll() is not None:
             break
         time.sleep(2)
 

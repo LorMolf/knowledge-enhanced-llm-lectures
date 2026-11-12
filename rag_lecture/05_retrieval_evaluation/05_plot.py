@@ -33,21 +33,22 @@ def score(metrics, metric, k):
     return metrics[f"{metric}@{k}"] if f"{metric}@{k}" in metrics else metrics[f"{metric}@k"][k]
 
 
-# 4. One panel per metric, observed vs ideal, so the gap is visible.
-fig, axes = plt.subplots(2, 3, figsize=(11, 5), sharey=True)
-for ax, metric in zip(axes.flat, ("accuracy", "precision", "recall", "mrr", "ndcg", "map")):
-    ax.plot(KS, [score(naive_metrics, metric, k) for k in KS], marker="o", label="PubMedBERT CLS")
-    ax.plot(
-        KS,
-        [score(ideal_metrics, metric, k) for k in KS],
-        linestyle="--",
-        color="gray",
-        label="ideal ranking",
-    )
-    ax.set(title=metric.upper(), xlabel="cutoff k", ylabel="mean score", ylim=(0, 1), xticks=KS)
-axes[0, 0].legend(frameon=False, fontsize=8)
-gaps = {metric: score(ideal_metrics, metric, 10) - score(naive_metrics, metric, 10)
-        for metric in ("accuracy", "recall", "ndcg", "map")}
-print("remaining gap at k=10:", {m: round(g, 3) for m, g in gaps.items()})
-fig.tight_layout()
+# 4. One panel: nDCG at each cutoff, observed against the best possible ranking.
+fig, ax = plt.subplots(figsize=(6.6, 3.2), constrained_layout=True)
+ax.plot(KS, [score(naive_metrics, "ndcg", k) for k in KS], marker="o", label="PubMedBERT CLS")
+ax.plot(KS, [score(ideal_metrics, "ndcg", k) for k in KS], linestyle="--", color="gray",
+        label="ideal ranking")
+ax.set(xticks=KS, xlabel="cutoff k", ylabel="nDCG@k", ylim=(0, 1))
+ax.legend(frameon=False, fontsize=8)
+ax.set_title("how much of the achievable nDCG this ranking reaches", fontsize=9, loc="left")
 plt.show()
+
+# 5. the other metrics are numbers, not panels: observed against the ceiling at k=10.
+comparison = pd.DataFrame({
+    "metric": ["accuracy@1", "recall@10", "ndcg@10", "map@10"],
+})
+comparison["observed"] = [round(score(naive_metrics, m.split("@")[0], 10), 3) for m in comparison.metric]
+comparison["ideal"] = [round(score(ideal_metrics, m.split("@")[0], 10), 3) for m in comparison.metric]
+comparison["gap"] = (comparison["ideal"] - comparison["observed"]).round(3)
+display(comparison)
+print("on 32 questions, one question moves accuracy@1 by", round(1 / len(query_ids), 3))

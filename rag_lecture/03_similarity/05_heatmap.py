@@ -1,60 +1,49 @@
 r"""
-### What do the actual model vectors look like?
+### Where the labelled paper actually lands
 
-Now compute cosine scores from section 02's real CLS vectors, one row per
-question. The first five columns are those questions' own labelled papers, so a
-diagonal is what a working retriever would give; the last three are ordinary
-corpus documents. The colour range is fitted to the observed scores, because raw
-CLS cosines sit in a narrow band near the top of the scale. Read the numbers:
-is the labelled paper the highest score in its row?
+Five questions, one dot each: the rank the labelled paper reaches among all 2,000 papers
+under the CLS encoder, with the score gap to the paper that came first. A dot at 1 is a
+working retriever; a dot at 4 with a gap of 0.01 is a near miss; a dot past 100 says the
+encoder never saw the connection. The worst case is then printed in words, both papers,
+so the miss can be judged rather than trusted.
 """
 
-import seaborn as sns
+# 1. the labelled paper's true rank in the full corpus, not just the top ten
+rows = []
+normalised_corpus = F.normalize(naive_corpus_embeddings, dim=1)
+for position, qid in enumerate(query_ids[:5]):
+    scores = (F.normalize(naive_query_embeddings[position:position + 1], dim=1)
+              @ normalised_corpus.T).squeeze(0)
+    order = torch.argsort(scores, descending=True)
+    ranked_ids = [corpus_ids[i] for i in order.tolist()]
+    labelled = sorted(relevant_docs[qid])[0]
+    rows.append({
+        "question id": qid,
+        "labelled rank": ranked_ids.index(labelled) + 1,
+        "score of rank 1": float(scores[order[0]]),
+        "score of labelled": float(scores[order[ranked_ids.index(labelled)]]),
+        "rank-1 paper": ranked_ids[0],
+    })
 
-# 1. pick the first labelled paper for each of the first five questions
-heat_ids = [sorted(relevant_docs[qid])[0] for qid in query_ids[:5]]
+table = pd.DataFrame(rows).set_index("question id")
+table["gap to rank 1"] = (table["score of rank 1"] - table["score of labelled"]).round(3)
+display(table)
 
-# 2. pad the column set with ordinary corpus docs until we have eight
-for doc_id in corpus_ids:
-    if len(heat_ids) == 8:
-        break
-    if doc_id not in heat_ids:
-        heat_ids.append(doc_id)
-
-# 3. map those doc ids to their rows in the corpus embedding matrix
-heat_positions = [corpus_ids.index(doc_id) for doc_id in heat_ids]
-
-# 4. cosine scores: normalise both sides, then take the dot product
-small_scores = (
-    F.normalize(naive_query_embeddings[:5], dim=1)
-    @ F.normalize(naive_corpus_embeddings[heat_positions], dim=1).T
-)
-
-# 5. draw the 5x8 grid, annotating each cell with its score
-fig, ax = plt.subplots(figsize=(10, 3))
-sns.heatmap(
-    small_scores.numpy(),
-    annot=True,
-    fmt=".2f",
-    xticklabels=heat_ids,
-    yticklabels=query_ids[:5],
-    cmap="viridis",
-    vmin=float(small_scores.min()),
-    vmax=float(small_scores.max()),
-    ax=ax,
-)
-ax.set(
-    xlabel="document (first five: each question's labelled paper)",
-    ylabel="question ID",
-    title="Observed CLS cosine similarities",
-)
-fig.tight_layout()
+# 2. one dot per question on a log rank axis: 1 is perfect, 1000 is hopeless
+fig, ax = plt.subplots(figsize=(7.2, 2.8), constrained_layout=True)
+y = np.arange(len(table))
+ax.hlines(y, 1, table["labelled rank"], color="#C9CFD8", linewidth=2)
+ax.scatter(table["labelled rank"], y, s=60, color="#9D2235", zorder=3, label="labelled paper")
+ax.set_yticks(y, table.index, fontsize=8)
+ax.set(xlabel="rank of the labelled paper among 2,000 papers", xscale="log",
+       xticks=[1, 2, 5, 10, 50, 200, 1000], xlim=(0.9, 2600))
+ax.legend(frameon=False, fontsize=8, loc="lower right")
+ax.set_title("how deep the first right paper sits, five questions", fontsize=9, loc="left")
 plt.show()
 
-# 6. answer the question in words: is the labelled paper the top score in its row?
-winners = small_scores.argmax(dim=1).tolist()
-for row, (qid, column) in enumerate(zip(query_ids[:5], winners)):
-    best_id = heat_ids[column]
-    correct = best_id == heat_ids[row]
-    print(f"{qid}  top-1 {'is its labelled paper' if correct else f'is {best_id}, not its labelled paper'}"
-          f"  ({float(small_scores[row, column]):.3f})")
+# 3. the worst row in words: the question, the labelled paper, and what beat it
+worst = table["labelled rank"].idxmax()
+print("worst question:", worst, "|", queries[worst][:110])
+print("labelled paper:", corpus[sorted(relevant_docs[worst])[0]][:200].replace("\n", " "))
+rank1_id = table.loc[worst, "rank-1 paper"]
+print("what came first:", corpus[rank1_id][:200].replace("\n", " "))

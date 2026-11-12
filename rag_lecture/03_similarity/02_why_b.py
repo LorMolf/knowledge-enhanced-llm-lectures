@@ -2,8 +2,9 @@ r"""
 ### Counts get the ranking wrong, and the figure shows where
 
 Six candidates for one real question: the passage the dataset labels as the answer, and
-five papers that share the question's words. Both scores are proper cosines — divided by
-both norms — and both ranks are printed, so nothing here is inferred from a bar height.
+five papers that share the question's words. Both scores are proper cosines. Each row is
+one paper with a dot per scorer, so the distance between the dots is what the choice of
+scorer is worth for that paper, and the labelled row is the one that must come out on top.
 """
 
 # 101 continued: same arithmetic, two sets of numbers, two rankings.
@@ -57,32 +58,36 @@ model_cosine = (
     @ (query_vector / np.linalg.norm(query_vector, axis=1, keepdims=True)).T
 ).squeeze(1)
 
-table = pd.DataFrame({
+display(pd.DataFrame({
     "paper": SHORT,
     "shared terms": [overlap(doc_id) for doc_id in CANDIDATES],
     "count cosine": count_cosine.round(3),
     "model cosine": model_cosine.round(3),
-})
-display(table)
+    "first 60 chars": [corpus[doc_id][:60].replace("\n", " ") for doc_id in CANDIDATES],
+}))
 
-# 5. one figure, two series, every value printed
-order = np.argsort(-model_cosine)
-fig, ax = plt.subplots(figsize=(7.4, 3.4), constrained_layout=True)
-x = np.arange(len(order))
-ax.bar(x - 0.2, count_cosine[order], 0.4, label="word counts", color="#B9C4D2")
-ax.bar(x + 0.2, model_cosine[order], 0.4, label="PubMedBERT", color="#9D2235")
-ax.set_xticks(x, [SHORT[i] for i in order])
-ax.set(ylabel="cosine to the question", ylim=(0, 1.05))
-ax.legend(frameon=False, fontsize=8)
-for xi, value in zip(x, model_cosine[order]):
-    ax.text(xi + 0.2, value + 0.02, f"{value:.2f}", ha="center", fontsize=7)
-for xi, value in zip(x, count_cosine[order]):
-    ax.text(xi - 0.2, value + 0.02, f"{value:.2f}", ha="center", fontsize=7, color="#555555")
-ax.set_title("the labelled answer is the first bar; where does each scorer put it?", fontsize=9, loc="left")
+# 5. dumbbell: one row per paper, a dot per scorer, sorted so the model's best is on top
+order = np.argsort(model_cosine)
+fig, ax = plt.subplots(figsize=(7.6, 3.4), constrained_layout=True)
+for row, index in enumerate(order):
+    colour = "#9D2235" if index == 0 else "#C9CFD8"
+    ax.plot([count_cosine[index], model_cosine[index]], [row, row], color=colour, linewidth=2)
+    ax.scatter(count_cosine[index], row, s=42, color="#7F8C9B", zorder=3,
+               label="word counts" if row == 0 else None)
+    ax.scatter(model_cosine[index], row, s=42, color="#9D2235", zorder=4,
+               label="PubMedBERT" if row == 0 else None)
+ax.set_yticks(range(len(order)), [SHORT[i] for i in order])
+ax.set(xlabel="cosine to the question",
+       xlim=(0, 1.15 * max(model_cosine.max(), count_cosine.max())))
+ax.legend(frameon=False, fontsize=8, loc="lower right")
+ax.set_title("sorted by the model: the labelled answer is the top row", fontsize=9, loc="left")
 plt.show()
 
-# 6. where the labelled answer actually lands under each ranking
+# 6. where the labelled answer lands under each ranking, and what beat it
 count_rank = int(pd.Series(count_cosine).rank(ascending=False).iloc[0])
 model_rank = int(pd.Series(model_cosine).rank(ascending=False).iloc[0])
+best_count = SHORT[int(np.argmax(count_cosine))]
 print(f"question: {QUESTION[:110]}")
-print(f"labelled paper: rank {count_rank} by word counts, rank {model_rank} by the model, of {len(CANDIDATES)}")
+print(f"labelled paper: rank {count_rank} by word counts (beaten by {best_count}), "
+      f"rank {model_rank} by the model, of {len(CANDIDATES)}")
+print("what word counts put first:", corpus[CANDIDATES[SHORT.index(best_count)]][:160].replace("\n", " "))

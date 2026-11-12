@@ -12,6 +12,9 @@ was checked against?
 """
 
 import os
+
+# Training cells report to W&B; offline mode needs no account and keeps a local run.
+os.environ.setdefault("WANDB_MODE", "offline")
 import random
 import sys
 from importlib.metadata import PackageNotFoundError, version

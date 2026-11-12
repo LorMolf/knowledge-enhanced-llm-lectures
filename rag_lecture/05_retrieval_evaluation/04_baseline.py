@@ -11,4 +11,4 @@ came back, and ndcg@10 about where the relevant papers sat in between.
 # The baseline row: every later retriever is compared with this one.
 naive_metrics = evaluate_run("PubMedBERT CLS", naive_rankings)
 display(pd.DataFrame(evaluation_rows).set_index("model"))
-print("baseline accuracy@1:", round(naive_metrics["accuracy@k"][1], 3), "| nDCG@10:", round(naive_metrics["ndcg@k"][10], 3))
+print("baseline accuracy@1:", round(naive_metrics["accuracy@1"], 3), "| nDCG@10:", round(naive_metrics["ndcg@10"], 3))

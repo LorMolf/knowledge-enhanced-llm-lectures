@@ -10,17 +10,17 @@ corpus is truncated, and does that change what a "document" can contain?
 
 import matplotlib.pyplot as plt
 
-# 1. tokenize the example passage twice: once whole, once cut at the limit
+# tokenize the example passage twice: once whole, once cut at the limit
 full_document_tokens = naive_tokenizer(corpus[example_doc], truncation=False)["input_ids"]
 retained_document_tokens = naive_tokenizer(
     corpus[example_doc], truncation=True, max_length=MAX_DOC_TOKENS
 )["input_ids"]
 
-# 2. measure every passage in the corpus, then count how many exceed the limit
+# measure every passage in the corpus, then count how many exceed the limit
 document_lengths = [len(naive_tokenizer(text, truncation=False)["input_ids"]) for text in corpus_texts]
 truncated = sum(length > MAX_DOC_TOKENS for length in document_lengths)
 
-# 3. show the example side by side so the loss is visible
+# show the example side by side so the loss is visible
 print(
     "example document:",
     example_doc,
@@ -30,7 +30,7 @@ print(
     len(retained_document_tokens),
 )
 
-# 4. histogram of all passage lengths with the truncation limit marked
+# histogram of all passage lengths with the truncation limit marked
 fig, ax = plt.subplots(figsize=(8, 3))
 ax.hist(document_lengths, bins=60, color="steelblue")
 print("papers longer than", MAX_DOC_TOKENS, "tokens:", truncated, "of", len(document_lengths), f"({truncated/len(document_lengths):.1%})")

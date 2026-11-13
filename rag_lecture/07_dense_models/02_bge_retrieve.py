@@ -7,12 +7,12 @@ uses the same held-out questions and partial relevance labels as before. What
 does the first retrieved paper discuss, and is it a labelled positive?
 """
 
-# 1. encode the corpus once, normalized so dot product is cosine similarity
+# encode the corpus once, normalized so dot product is cosine similarity
 bge_corpus_embeddings = bge_model.encode(
     corpus_texts, convert_to_tensor=True, normalize_embeddings=True, show_progress_bar=True
 ).cpu()
 
-# 2. encode the questions with the published BGE query instruction
+# encode the questions with the published BGE query instruction
 bge_query_embeddings = bge_model.encode(
     query_texts,
     prompt=BGE_QUERY_PROMPT,
@@ -21,13 +21,13 @@ bge_query_embeddings = bge_model.encode(
     show_progress_bar=True,
 ).cpu()
 
-# 3. rank with the shared dense ranker, mapping positions back to document IDs
+# rank with the shared dense ranker, mapping positions back to document IDs
 bge_rankings = rank_dense(bge_query_embeddings, bge_corpus_embeddings, query_ids)
 
-# 4. score against the same held-out questions and partial labels as before
+# score against the same held-out questions and partial labels as before
 bge_metrics = evaluate_run("BGE", bge_rankings)
 
-# 5. inspect the top hit for the first question
+# inspect the top hit for the first question
 first_bge_hit = bge_rankings[query_ids[0]][0]
 display(
     {

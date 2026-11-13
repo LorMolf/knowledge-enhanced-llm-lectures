@@ -10,7 +10,7 @@ gives the band those papers draw over questions rather than over seeds.
 import matplotlib.pyplot as plt
 import numpy as np
 
-# 1. Four colours and one set of rcParams: every later figure inherits both.
+# Four colours and one set of rcParams: every later figure inherits both.
 INK, ACCENT, MUTED = "#334155", "#B45309", "#94A3B8"
 OURS, BASELINE = "#0F766E", "#64748B"
 

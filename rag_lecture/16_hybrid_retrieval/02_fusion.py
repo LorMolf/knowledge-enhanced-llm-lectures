@@ -23,14 +23,14 @@ def as_run(rankings, name):
     )
 
 
-# 1. wrap the two candidate lists as ranx runs
+# wrap the two candidate lists as ranx runs
 bm25_run = as_run(bm25_rankings, "BM25")
 bge_run = as_run(all_rankings["BGE"], "BGE")
 
-# 2. fuse by rank, k = 60 as in the formula
+# fuse by rank, k = 60 as in the formula
 fused = fuse(runs=[bm25_run, bge_run], method="rrf", params={"k": 60})
 
-# 3. back to the lecture's ranking shape: score descending, then ID ascending
+# back to the lecture's ranking shape: score descending, then ID ascending
 hybrid_rankings = {}
 for qid in queries:
     ordered = sorted(fused.run[qid].items(), key=lambda item: (-item[1], item[0]))[:MAX_K]
@@ -38,7 +38,7 @@ for qid in queries:
         {"corpus_id": doc_id, "score": float(score)} for doc_id, score in ordered
     ]
 
-# 4. compare the top paper from each retriever against the fused winner
+# compare the top paper from each retriever against the fused winner
 print(
     "question",
     example_qid,

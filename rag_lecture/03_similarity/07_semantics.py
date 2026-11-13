@@ -10,7 +10,7 @@ as high as the answer is measuring topic, not truth.
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# 1. one question, four candidates that differ in meaning but not in vocabulary
+# one question, four candidates that differ in meaning but not in vocabulary
 semantic_texts = [
     "Which protein does compound X bind?",
     "Compound X binds protein Y.",
@@ -23,7 +23,7 @@ semantic_labels = ["answer", "paraphrase", "negation", "shared words"]
 semantic_cls = encode_biomed(semantic_texts, naive_model, naive_tokenizer)
 semantic_cls_scores = util.cos_sim(semantic_cls[:1], semantic_cls[1:]).numpy()[0]
 
-# 2. bars on a zoomed axis: the four scores sit in a 0.02 band, so 0-1 would hide the order
+# bars on a zoomed axis: the four scores sit in a 0.02 band, so 0-1 would hide the order
 order = semantic_cls_scores.argsort()
 fig, ax = plt.subplots(figsize=(6.8, 2.9), constrained_layout=True)
 colours = ["#2E7D32" if semantic_labels[i] in ("answer", "paraphrase") else "#9D2235" for i in order]

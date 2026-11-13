@@ -1,7 +1,7 @@
 r"""
 <a name="section-03"></a>
 
-# 03. Similarity, geometry and rankings
+# Similarity, geometry and rankings
 
 Before any model, a similarity is arithmetic on counts. Six real abstracts from the
 corpus, a vocabulary of the eight words they share most often, and one dot product

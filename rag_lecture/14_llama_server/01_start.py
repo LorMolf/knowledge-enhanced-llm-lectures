@@ -1,7 +1,7 @@
 r"""
 <a name="section-14"></a>
 
-# 14. A reasoning model, served from Python
+# A reasoning model, served from Python
 
 The retrieval side is done; this is the generator. A free Colab GPU has about 14 GB of
 usable memory, so the model has to fit next to what the notebook already loaded:
@@ -23,7 +23,7 @@ import shutil
 import urllib.request
 from pathlib import Path
 
-# 1. The model, the endpoint, and the revision every later cell depends on.
+# The model, the endpoint, and the revision every later cell depends on.
 LLM_MODEL = "gemma4-12b"
 LLM_URL = "http://127.0.0.1:8080/v1"
 LLM_REPO = "unsloth/gemma-4-12B-it-qat-GGUF"

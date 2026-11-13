@@ -7,7 +7,7 @@ reuse the answer section 14 happened to print; it still needs that server to be 
 Now we answer with retrieved evidence (what a deployed system would see) and with oracle evidence (an upper-bound diagnostic, not deployable). The table shows all three conditions side by side for qualitative comparison. Relevance labels are incomplete, so neither a retrieved nor an oracle paper guarantees a correct answer.
 """
 
-# 1. answer with retrieved evidence (what a deployed system would see)
+# answer with retrieved evidence (what a deployed system would see)
 retrieved_answer = chat(
     [
         rag_system,
@@ -18,7 +18,7 @@ retrieved_answer = chat(
     ]
 )
 
-# 2. answer with oracle evidence (upper-bound diagnostic, not deployable)
+# answer with oracle evidence (upper-bound diagnostic, not deployable)
 gold_answer = chat(
     [
         rag_system,
@@ -29,10 +29,10 @@ gold_answer = chat(
     ]
 )
 
-# 3. the same question without evidence, generated here so this cell stands alone
+# the same question without evidence, generated here so this cell stands alone
 no_context = chat([{"role": "user", "content": f"Question: {example_question}"}])
 
-# 4. show the three conditions side by side for qualitative comparison
+# show the three conditions side by side for qualitative comparison
 display(
     pd.DataFrame(
         [

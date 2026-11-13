@@ -12,10 +12,10 @@ towards the reference, and whether that happens for the questions BGE answered b
 the rise depend on whether retrieval found a labelled paper?
 """
 
-# 1. the yardstick, keyed like the questions
+# the yardstick, keyed like the questions
 references = {str(row["id"]): row["answer"] for row in qa_test}
 
-# 2. encode both sides; the vectors are unit length, so the dot product is the cosine
+# encode both sides; the vectors are unit length, so the dot product is the cosine
 answer_vectors = bge_model.encode(
     rag_frame["answer"].tolist(), convert_to_tensor=True, normalize_embeddings=True
 )
@@ -25,10 +25,10 @@ reference_vectors = bge_model.encode(
     normalize_embeddings=True,
 )
 
-# 3. cosine per (question, condition) row, stored back on the frame
+# cosine per (question, condition) row, stored back on the frame
 rag_frame["similarity to reference (proxy)"] = (answer_vectors * reference_vectors).sum(1).cpu()
 
-# 4. one dot per question and condition, split by whether retrieval found anything
+# one dot per question and condition, split by whether retrieval found anything
 per_condition = rag_frame.groupby("condition")["similarity to reference (proxy)"].mean()
 print("mean cosine to the reference:", {k: round(v, 3) for k, v in per_condition.items()})
 print("delta vs no context:", {k: round(v - per_condition["no context"], 3) for k, v in per_condition.items()})

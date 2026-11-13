@@ -22,7 +22,7 @@ from importlib.metadata import PackageNotFoundError, version
 import numpy as np
 import torch
 
-# 1. One seed for every random source the notebook uses.
+# One seed for every random source the notebook uses.
 SEED = 42
 random.seed(SEED)
 np.random.seed(SEED)
@@ -32,13 +32,13 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 os.environ["PYTHONHASHSEED"] = str(SEED)
 
-# 2. What is running: interpreter, CUDA build, and the GPU we actually got.
+# What is running: interpreter, CUDA build, and the GPU we actually got.
 print("Python:", sys.executable)
 print("CUDA build of torch:", torch.version.cuda, "| GPU available:", torch.cuda.is_available())
 if torch.cuda.is_available():
     print("GPU:", torch.cuda.get_device_name(0))
 
-# 3. What was asked for, compared with what was loaded.
+# What was asked for, compared with what was loaded.
 EXPECTED = {"sentence-transformers": "6.2.0", "transformers": "5.22.2", "datasets": "4.8.5"}
 for package, wanted in EXPECTED.items():
     try:

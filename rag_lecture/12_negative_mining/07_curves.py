@@ -13,7 +13,7 @@ validation score, and is the difference larger than one question's worth?
 # Two panels: training loss (left) and validation score (right).
 fig, axes = plt.subplots(1, 2, figsize=(12, 3.8))
 
-# 1. Training loss per run — one line per method, same axes for comparison.
+# Training loss per run — one line per method, same axes for comparison.
 for method, history in loss_histories.items():
     frame = pd.DataFrame([row for row in history if "loss" in row])
     axes[0].plot(frame["step"], frame["loss"], marker="o", label=method)
@@ -22,7 +22,7 @@ axes[0].set(
 )
 axes[0].legend(frameon=False)
 
-# 2. Validation score per run — bars, fixed 0..1 scale so heights are comparable.
+# Validation score per run — bars, fixed 0..1 scale so heights are comparable.
 pd.DataFrame(val_scores).T.plot.bar(ax=axes[1], ylim=(0, 1), rot=0)
 axes[1].set(title="Validation after each run", ylabel="score")
 

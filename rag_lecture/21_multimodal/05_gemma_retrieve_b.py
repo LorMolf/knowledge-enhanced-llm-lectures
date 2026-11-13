@@ -4,11 +4,11 @@ r"""
 Ranking and evaluation are the section 07 calls, now with page IDs. The first question is plotted with its three highest-ranked pages, and the labelled page as a fourth panel so the right answer is always visible. Is the labelled page ranked where you would expect, and what do the pages above it have in common?
 """
 
-# 1. rank pages per query and score the retrieval
+# rank pages per query and score the retrieval
 gemma_rankings = rank_dense(gemma_query_embeddings, gemma_page_embeddings, mm_query_ids, mm_page_ids)
 display(evaluate_mm("EmbeddingGemma 2, 280 image tokens", gemma_rankings))
 
-# 2. show top-3 hits for the first question beside the labelled page
+# show top-3 hits for the first question beside the labelled page
 labelled_page = next(iter(mm_relevant[first_qid]))
 fig, axes = plt.subplots(1, 4, figsize=(14, 5))
 for rank, (ax, hit) in enumerate(zip(axes, gemma_rankings[first_qid][:3]), start=1):

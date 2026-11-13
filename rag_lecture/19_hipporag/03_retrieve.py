@@ -10,7 +10,7 @@ relation in the source text? Linked papers do not by themselves establish that a
 needs multi-hop reasoning.
 """
 
-# 1. Without a backend response there is nothing to validate; keep the names defined anyway.
+# Without a backend response there is nothing to validate; keep the names defined anyway.
 hippo_records = hippo_result["results"] if hippo_result else []
 hippo_rankings, hippo_dense_rankings, hippo_modes = {}, {}, {}
 
@@ -18,7 +18,7 @@ if not hippo_records:
     print("skipped: no HippoRAG index, because section 14's local model did not start; "
           "the comparison ledger keeps its other rows.")
 else:
-    # 2. One row per query, no duplicates, and a known mode for each.
+    # One row per query, no duplicates, and a known mode for each.
     if (
         len(hippo_records) != len(query_ids)
         or len({row["id"] for row in hippo_records}) != len(hippo_records)
@@ -32,7 +32,7 @@ else:
     hippo_dense_rankings = {row["id"]: row["dense"] for row in hippo_records}
     hippo_modes = {row["id"]: row["mode"] for row in hippo_records}
 
-    # 3. Inspect the first query: its mode, its top paper, and the source text behind it.
+    # Inspect the first query: its mode, its top paper, and the source text behind it.
     first_hippo = next(row for row in hippo_records if row["id"] == query_ids[0])
     display({
         "mode_counts": {mode: list(hippo_modes.values()).count(mode)
@@ -42,6 +42,6 @@ else:
         "first_retrieved_paper": corpus[first_hippo["hipporag"][0]["corpus_id"]],
     })
 
-    # 4. Score both runs with the shared evaluator, side by side.
+    # Score both runs with the shared evaluator, side by side.
     evaluate_run("HippoRAG BGE no-prefix dense", hippo_dense_rankings)
     evaluate_run("HippoRAG2", hippo_rankings)

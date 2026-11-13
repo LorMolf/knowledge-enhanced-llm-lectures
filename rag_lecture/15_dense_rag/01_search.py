@@ -1,7 +1,7 @@
 r"""
 <a name="section-15"></a>
 
-# 15. Dense retrieval-augmented generation
+# Dense retrieval-augmented generation
 
 ![A question travels through retrieval and generation](assets/rag-pipeline.png)
 
@@ -25,20 +25,20 @@ pd.set_option("display.max_colwidth", 400)
 
 
 def search_papers(query, k=5):
-    # 1. guard: reject empty queries and out-of-range k before encoding
+    # guard: reject empty queries and out-of-range k before encoding
     if not isinstance(query, str) or not query.strip() or type(k) is not int or not 1 <= k <= 10:
         raise ValueError("query must be nonempty and k an integer from 1 to 10")
 
-    # 2. encode the question with the published BGE query instruction
+    # encode the question with the published BGE query instruction
     vector = bge_model.encode([query], prompt=BGE_QUERY_PROMPT, convert_to_tensor=True)
 
-    # 3. score every paper (full scan) so ties are resolved deterministically
+    # score every paper (full scan) so ties are resolved deterministically
     hits = util.semantic_search(vector.cpu(), bge_corpus_embeddings.cpu(), top_k=len(corpus_ids))[0]
 
-    # 4. order by score desc, then by original paper ID for stable ties
+    # order by score desc, then by original paper ID for stable ties
     hits.sort(key=lambda h: (-float(h["score"]), corpus_ids[h["corpus_id"]]))
 
-    # 5. return the top-k as plain dicts: id, text, score
+    # return the top-k as plain dicts: id, text, score
     return [
         {
             "id": corpus_ids[h["corpus_id"]],
@@ -49,7 +49,7 @@ def search_papers(query, k=5):
     ]
 
 
-# 6. run the search on the lecture question and show the ranked evidence
+# run the search on the lecture question and show the ranked evidence
 retrieved = search_papers(example_question, k=3)
 print("Question:", example_question)
 display(pd.DataFrame(retrieved))

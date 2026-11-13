@@ -12,12 +12,12 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import torch.nn.functional as F
 
-# 1. define the toy query and two candidate vectors
+# define the toy query and two candidate vectors
 # (kept here so the next cell can score and draw them)
 toy_query = torch.tensor([1.0, 0.0])
 toy_docs = torch.tensor([[2.0, 1.0], [0.8, 0.0]])
 
-# 2. score each candidate with dot, cosine, and L2
+# score each candidate with dot, cosine, and L2
 toy_table = pd.DataFrame(
     {
         "candidate": ["long tilted", "short aligned"],

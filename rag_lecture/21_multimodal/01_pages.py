@@ -1,7 +1,7 @@
 r"""
 <a name="section-21"></a>
 
-# 21. Beyond text: retrieving page images
+# Beyond text: retrieving page images
 
 So far a paper was a string. Real documents also hold tables, charts, scanned
 pages and slides, and an OCR step before the encoder throws that layout away. A
@@ -28,12 +28,12 @@ a text-only pipeline need to answer this question?
 
 import random
 
-# 1. constants for this section: dataset pin and closed-corpus size
+# constants for this section: dataset pin and closed-corpus size
 MM_DATASET_ID = "vidore/syntheticDocQA_healthcare_industry_test"
 MM_DATASET_REVISION = "d973f3da3e60c8eaf566efa2f7d2a1515cba40ed"
 MM_CORPUS_SIZE = 300
 
-# 2. load the benchmark split and split rows into queries vs. page rows
+# load the benchmark split and split rows into queries vs. page rows
 mm_source = load_dataset(MM_DATASET_ID, split="test", revision=MM_DATASET_REVISION)
 mm_texts = list(mm_source["query"])  # None for pages without a question
 mm_files = list(mm_source["image_filename"])  # the real page ID
@@ -42,7 +42,7 @@ mm_queries = {f"q{n:03d}": mm_texts[i] for n, i in enumerate(mm_query_rows)}
 mm_relevant = {f"q{n:03d}": {mm_files[i]} for n, i in enumerate(mm_query_rows)}
 annotated_pages = {mm_files[i] for i in mm_query_rows}
 
-# 3. keep one row per distinct page, then sample distractors with a fixed seed
+# keep one row per distinct page, then sample distractors with a fixed seed
 first_row = {}
 for i, file in enumerate(mm_files):
     first_row.setdefault(file, i)  # one row per distinct page
@@ -50,12 +50,12 @@ page_distractors = sorted(set(first_row) - annotated_pages)
 random.Random(SEED).shuffle(page_distractors)
 mm_page_files = sorted(annotated_pages) + page_distractors[: MM_CORPUS_SIZE - len(annotated_pages)]
 
-# 4. decode only the chosen pages into memory and check the corpus is closed
+# decode only the chosen pages into memory and check the corpus is closed
 mm_pages = {file: mm_source[first_row[file]]["image"] for file in mm_page_files}
 assert len(mm_pages) == MM_CORPUS_SIZE and annotated_pages <= set(mm_pages)
 print("questions:", len(mm_queries), "annotated pages:", len(annotated_pages), "corpus:", len(mm_pages))
 
-# 5. show the first question next to its annotated page image
+# show the first question next to its annotated page image
 first_qid = next(iter(mm_queries))
 first_page = mm_pages[next(iter(mm_relevant[first_qid]))]
 print(first_qid, mm_queries[first_qid], first_page.size)

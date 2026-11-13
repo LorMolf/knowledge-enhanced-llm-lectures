@@ -11,7 +11,7 @@ below stays five lines: question, evidence, answer, and the three label-free cou
 import json
 from pathlib import Path
 
-# 1. one switch and one cache path for the whole section
+# one switch and one cache path for the whole section
 RUN_LLM = True  # False reuses the cached answers instead of paying 96 calls
 RAG_CACHE = Path("outputs/rag_frame.parquet")
 CONDITIONS = ("no context", "BGE top-3", "labelled papers")

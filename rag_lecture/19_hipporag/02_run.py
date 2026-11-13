@@ -15,12 +15,12 @@ import shutil
 import subprocess
 import sys
 
-# 1. HippoRAG extracts triples with an LLM, so without a local server there is nothing to build.
+# HippoRAG extracts triples with an LLM, so without a local server there is nothing to build.
 hippo_result = None
 if not SERVER_READY:
     print("skipped: HippoRAG's OpenIE pass needs the local model from section 14.")
 else:
-    # 2. Prefer the isolated uv project; fall back to this interpreter when uv is absent.
+    # Prefer the isolated uv project; fall back to this interpreter when uv is absent.
     runner = ["uv", "run", "--project", "hippo_backend", "--frozen"] if shutil.which("uv") else [sys.executable]
     subprocess.run(
         [*runner, "hippo_backend/run.py",
@@ -28,11 +28,11 @@ else:
         check=True,
     )
 
-    # 3. Refuse a stale result whose input hash does not match the current file.
+    # Refuse a stale result whose input hash does not match the current file.
     hippo_result = json.loads(hippo_output.read_text(encoding="utf-8"))
     if hippo_result["input_sha256"] != hashlib.sha256(hippo_input.read_bytes()).hexdigest():
         raise ValueError("Backend output does not match the current input")
 
-    # 4. The graph statistics this index produced.
+    # The graph statistics this index produced.
     display({"graph_info": hippo_result["graph_info"],
              "index_fingerprint": hippo_result["index_fingerprint"]})

@@ -1,7 +1,7 @@
 r"""
 <a name="section-19"></a>
 
-# 19. HippoRAG 2: retrieval over connected evidence
+# HippoRAG 2: retrieval over connected evidence
 
 HippoRAG extracts relations from papers, links question-related facts, and uses
 personalized PageRank with passage evidence. The section 18 GLiNER graph is
@@ -32,14 +32,14 @@ questions does it carry?
 import json
 from pathlib import Path
 
-# 1. identity + paths: the instance tag is part of the index fingerprint
+# identity + paths: the instance tag is part of the index fingerprint
 HIPPO_LLM_INSTANCE = "gemma-4-12B-it-QAT-UD-Q4_K_XL"
 hippo_io = Path("outputs/hipporag-lecture-io")
 hippo_io.mkdir(parents=True, exist_ok=True)
 hippo_input = hippo_io / "input.json"
 hippo_output = hippo_io / "output.json"
 
-# 2. build the handoff payload the backend will read
+# build the handoff payload the backend will read
 hippo_task = {
     "corpus": [{"id": doc_id, "text": corpus[doc_id]} for doc_id in corpus_ids],
     "queries": [{"id": qid, "text": queries[qid]} for qid in query_ids],
@@ -50,10 +50,10 @@ hippo_task = {
     "embedding_model": BGE_MODEL_ID,
 }
 
-# 3. write it to disk so the separate uv project can pick it up
+# write it to disk so the separate uv project can pick it up
 hippo_input.write_text(json.dumps(hippo_task, ensure_ascii=False, indent=2), encoding="utf-8")
 
-# 4. show what was handed off
+# show what was handed off
 display(
     {
         "input": str(hippo_input),

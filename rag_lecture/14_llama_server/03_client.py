@@ -14,7 +14,7 @@ needs the token counts the message drops.
 
 from openai import OpenAI
 
-# 1. The client every later cell calls; LLM_URL and LLM_MODEL come from section 14's first cell.
+# The client every later cell calls; LLM_URL and LLM_MODEL come from section 14's first cell.
 client = OpenAI(base_url=LLM_URL, api_key="local")
 
 
@@ -58,7 +58,7 @@ def chat_full(messages, reasoning=True):
     return completion.model_dump()
 
 
-# 2. What the server says it is serving, when there is one to ask.
+# What the server says it is serving, when there is one to ask.
 if SERVER_READY:
     print("served models:", [entry.id for entry in client.models.list().data], "| expected:", LLM_MODEL)
 else:

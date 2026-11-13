@@ -8,7 +8,7 @@ then the rest — scored by the same evaluator. The gap between the two curves i
 retrieval quality is still on the table; the table underneath says the same in numbers.
 """
 
-# 1. Build the ideal ranking: labelled papers first, then everything else.
+# Build the ideal ranking: labelled papers first, then everything else.
 ideal_rankings = {}
 for qid in query_ids:
     ordered = sorted(relevant_docs[qid]) + [
@@ -19,18 +19,18 @@ for qid in query_ids:
         for rank, doc_id in enumerate(ordered[:MAX_K])
     ]
 
-# 2. Score the ideal ranking with the same evaluator as the real run.
+# Score the ideal ranking with the same evaluator as the real run.
 ideal_metrics = evaluator.compute_metrics(
     [ideal_rankings[qid] for qid in evaluator.queries_ids]
 )
 
 
-# 3. evaluate_run returns a flat row, compute_metrics nests {metric@k: {k: value}}.
+# evaluate_run returns a flat row, compute_metrics nests {metric@k: {k: value}}.
 def score(metrics, metric, k):
     return metrics[f"{metric}@{k}"] if f"{metric}@{k}" in metrics else metrics[f"{metric}@k"][k]
 
 
-# 4. Per-question nDCG@k, so the band is over questions and not over one aggregate.
+# Per-question nDCG@k, so the band is over questions and not over one aggregate.
 def ndcg_at_k(hits, relevant, k):
     gains = [1 / np.log2(rank + 1) for rank, hit in enumerate(hits[:k], 1)
              if hit["corpus_id"] in relevant]
@@ -44,7 +44,7 @@ per_question = {
     for k in KS
 }
 
-# 5. The curve, with the band and the ceiling on the same axes.
+# The curve, with the band and the ceiling on the same axes.
 fig, ax = plt.subplots(constrained_layout=True)
 means = np.array([per_question[k].mean() for k in KS])
 low = np.array([bootstrap_ci(per_question[k], seed=SEED)[1] for k in KS])
@@ -60,7 +60,7 @@ ax.set(xticks=KS, ylim=(0, 1.08))
 panel(ax, "cutoff k", "nDCG@k", "retrieval quality against the best achievable ranking\n95% bootstrap band over 32 questions")
 plt.show()
 
-# 6. The other metrics are numbers, not panels: observed against the ceiling at k=10.
+# The other metrics are numbers, not panels: observed against the ceiling at k=10.
 comparison = pd.DataFrame({"metric": ["accuracy@1", "recall@10", "ndcg@10", "map@10"]})
 comparison["observed"] = [round(score(naive_metrics, m.split("@")[0], 10), 3) for m in comparison.metric]
 comparison["ideal"] = [round(score(ideal_metrics, m.split("@")[0], 10), 3) for m in comparison.metric]

@@ -1,7 +1,7 @@
 r"""
 <a name="section-17"></a>
 
-# 17. A retrieval tool
+# A retrieval tool
 
 A tool call is a structured request, not code the model may execute directly:
 the application checks the requested name and arguments, runs its allowlisted
@@ -15,7 +15,7 @@ must support the model's native tool template.
 
 import json
 
-# 1. Declare the tool schema the model is allowed to call.
+# Declare the tool schema the model is allowed to call.
 #    The application, not the model, decides what "search_papers" actually does.
 search_tool = {
     "type": "function",
@@ -34,7 +34,7 @@ search_tool = {
     },
 }
 
-# 2. Build the conversation: a system rule plus the user's question.
+# Build the conversation: a system rule plus the user's question.
 #    The system prompt tells the model to cite IDs and treat results as data.
 tool_messages = [
     {
@@ -44,11 +44,11 @@ tool_messages = [
     {"role": "user", "content": example_question},
 ]
 
-# 3. Ask the model; it should answer with a structured tool call, not prose.
+# Ask the model; it should answer with a structured tool call, not prose.
 requested = chat(tool_messages, tools=[search_tool])
 display(requested)
 
-# 4. Guard: if no tool call came back, the server template is likely wrong.
+# Guard: if no tool call came back, the server template is likely wrong.
 if not requested.get("tool_calls"):
     if SERVER_READY:
         raise ValueError(

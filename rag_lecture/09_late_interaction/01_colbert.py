@@ -1,7 +1,7 @@
 r"""
 <a name="section-09"></a>
 
-# 09. ColBERT and Reason-ModernColBERT
+# ColBERT and Reason-ModernColBERT
 
 A single dense vector must represent an entire document. ColBERT instead keeps
 one contextual vector per token. For each query token, find the most similar
@@ -26,9 +26,9 @@ prompts and modules before comparing token-vector shapes.
 # Load the original ColBERTv2 checkpoint through the native multi-vector API.
 from sentence_transformers import MultiVectorEncoder
 
-# 1. build the encoder on the shared device (legacy checkpoint format is supported)
+# build the encoder on the shared device (legacy checkpoint format is supported)
 colbert_model = MultiVectorEncoder("colbert-ir/colbertv2.0", device=DEVICE)
 
-# 2. inspect what the loader attached: the module tree and the role prompts
+# inspect what the loader attached: the module tree and the role prompts
 print(colbert_model)
 print("Role prompts:", colbert_model.prompts)

@@ -16,11 +16,11 @@ literature retrieval rather than general web search.
 QWEN_MODEL_ID = "Qwen/Qwen3-Embedding-0.6B"
 QWEN_QUERY_PROMPT = "Instruct: Given a biomedical question, retrieve relevant scientific papers that answer the question\nQuery:"
 
-# 1. load the embedding model onto the notebook's device
+# load the embedding model onto the notebook's device
 qwen_model = SentenceTransformer(QWEN_MODEL_ID, device=DEVICE)
 qwen_model.max_seq_length = MAX_DOC_TOKENS
 
-# 2. encode documents with an empty prompt (Qwen leaves docs unprompted)
+# encode documents with an empty prompt (Qwen leaves docs unprompted)
 qwen_corpus_embeddings = qwen_model.encode(
     corpus_texts,
     prompt="",
@@ -29,6 +29,6 @@ qwen_corpus_embeddings = qwen_model.encode(
     show_progress_bar=True,
 ).cpu()
 
-# 3. show the query format and the document matrix shape
+# show the query format and the document matrix shape
 print("Query input:", QWEN_QUERY_PROMPT + query_texts[0])
 print("Document vector shape:", qwen_corpus_embeddings.shape)

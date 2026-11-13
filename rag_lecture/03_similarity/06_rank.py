@@ -13,25 +13,25 @@ from sentence_transformers import util
 
 
 def rank_dense(query_vectors, document_vectors, qids=query_ids, dids=corpus_ids):
-    # 1. guard: vectors and IDs must line up one-to-one
+    # guard: vectors and IDs must line up one-to-one
     if len(query_vectors) != len(qids) or len(document_vectors) != len(dids):
         raise ValueError("Vector and ID counts do not match")
     if len(set(qids)) != len(qids) or len(set(dids)) != len(dids):
         raise ValueError("IDs must be unique")
 
-    # 2. score every (query, document) pair, then map positions back to dataset IDs
+    # score every (query, document) pair, then map positions back to dataset IDs
     hits = util.semantic_search(query_vectors, document_vectors, top_k=len(dids))
     rankings = {}
     for qid, row in zip(qids, hits):
         ordered = [
             {"corpus_id": dids[hit["corpus_id"]], "score": float(hit["score"])} for hit in row
         ]
-        # 3. sort by descending score, break ties by ascending original ID, keep top MAX_K
+        # sort by descending score, break ties by ascending original ID, keep top MAX_K
         rankings[qid] = sorted(ordered, key=lambda h: (-h["score"], h["corpus_id"]))[:MAX_K]
     return rankings
 
 
-# 4. rank the naive baseline and inspect the first query's top hits
+# rank the naive baseline and inspect the first query's top hits
 naive_rankings = rank_dense(naive_query_embeddings, naive_corpus_embeddings)
 first_hits = naive_rankings[query_ids[0]]
 display(

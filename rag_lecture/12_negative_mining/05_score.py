@@ -12,7 +12,7 @@ def score_one(method, model):
     """Encode the corpus once, then score validation and test for this run."""
     docs = model.encode(corpus_texts, convert_to_tensor=True, device="cuda").cpu()
 
-    # 1. validation: question side only, with the published query prompt
+    # validation: question side only, with the published query prompt
     val_vectors = model.encode(
         list(val_queries.values()), prompt=BGE_QUERY_PROMPT, convert_to_tensor=True, device="cuda"
     ).cpu()
@@ -23,7 +23,7 @@ def score_one(method, model):
     # same flat shape evaluate_run returns for test, so one key style reads both
     val_metrics = {f"{m.replace('@k', '')}@{k}": float(v) for m, vals in raw_val.items() for k, v in vals.items()}
 
-    # 2. test: same encoding path, scored into the shared ledger
+    # test: same encoding path, scored into the shared ledger
     test_vectors = model.encode(
         query_texts, prompt=BGE_QUERY_PROMPT, convert_to_tensor=True, device="cuda"
     ).cpu()

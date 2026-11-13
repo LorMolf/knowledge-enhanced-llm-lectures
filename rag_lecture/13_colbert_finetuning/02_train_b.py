@@ -15,7 +15,7 @@ from sentence_transformers.training_args import BatchSamplers
 
 def train_colbert(model=colbert_model):
     """Fine-tune ColBERTv2 on the section-11 pairs and return the trainer."""
-    # 1. the same budget as every other training run in this lecture
+    # the same budget as every other training run in this lecture
     args = MultiVectorEncoderTrainingArguments(
         output_dir="models/colbert-in-batch",
         max_steps=TRAIN_STEPS,
@@ -31,7 +31,7 @@ def train_colbert(model=colbert_model):
         prompts={"query": model.prompts["query"], "positive": model.prompts["document"]},
     )
 
-    # 2. MaxSim inside the in-batch contrastive loss, then the run
+    # MaxSim inside the in-batch contrastive loss, then the run
     trainer = MultiVectorEncoderTrainer(
         model=model,
         args=args,

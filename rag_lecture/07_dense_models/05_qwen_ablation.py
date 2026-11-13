@@ -6,7 +6,7 @@ for both runs. Which documents move for the first question? Compare the
 aggregate metrics too, remembering that unlabelled papers may still be useful.
 """
 
-# 1. encode the same queries twice: once with the instruction prompt, once with an empty prompt
+# encode the same queries twice: once with the instruction prompt, once with an empty prompt
 qwen_prompted = qwen_model.encode(
     query_texts, prompt=QWEN_QUERY_PROMPT, convert_to_tensor=True, normalize_embeddings=True
 ).cpu()
@@ -14,11 +14,11 @@ qwen_empty = qwen_model.encode(
     query_texts, prompt="", convert_to_tensor=True, normalize_embeddings=True
 ).cpu()
 
-# 2. rank the shared corpus vectors against each query set
+# rank the shared corpus vectors against each query set
 qwen_prompted_rankings = rank_dense(qwen_prompted, qwen_corpus_embeddings, query_ids)
 qwen_empty_rankings = rank_dense(qwen_empty, qwen_corpus_embeddings, query_ids)
 
-# 3. show aggregate metrics side by side, plus the top-3 hits for the first question
+# show aggregate metrics side by side, plus the top-3 hits for the first question
 display(
     {
         "prompted": evaluate_run("Qwen instruction", qwen_prompted_rankings),
@@ -35,5 +35,5 @@ display(
     }
 )
 
-# 4. free the previous model and its tensors before the next section
+# free the previous model and its tensors before the next section
 del qwen_model, qwen_corpus_embeddings, qwen_prompted, qwen_empty

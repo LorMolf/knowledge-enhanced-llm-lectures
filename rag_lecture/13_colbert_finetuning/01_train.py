@@ -1,7 +1,7 @@
 r"""
 <a name="section-13"></a>
 
-# 13. Fine-tune ColBERT
+# Fine-tune ColBERT
 
 ### Two things a ColBERT run needs that BGE did not
 
@@ -14,6 +14,6 @@ show the prefixes before training touches anything.
 
 from sentence_transformers import MultiVectorEncoder
 
-# 1. the checkpoint, on the GPU, with whatever prompts it carries
+# the checkpoint, on the GPU, with whatever prompts it carries
 colbert_model = MultiVectorEncoder("colbert-ir/colbertv2.0", device=DEVICE)
 print("role prompts:", list(colbert_model.prompts))

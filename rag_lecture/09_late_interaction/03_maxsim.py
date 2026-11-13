@@ -14,20 +14,20 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import torch
 
-# 1. pick one labelled-positive document to inspect
+# pick one labelled-positive document to inspect
 inspect_doc_id = sorted(relevant_docs[query_ids[0]])[0]
 inspect_doc_index = corpus_ids.index(inspect_doc_id)
 print("question:", query_texts[0][:120])
 print("labelled paper:", inspect_doc_id, "|", corpus[inspect_doc_id][:120])
 
-# 2. every query vector against every retained document vector
+# every query vector against every retained document vector
 similarities = (
     torch.as_tensor(colbert_queries[0]).cpu()
     @ torch.as_tensor(colbert_docs[inspect_doc_index]).cpu().T
 )
 best_positions = similarities.argmax(dim=1)
 
-# 3. the answer the markdown asks for, before the picture
+# the answer the markdown asks for, before the picture
 wins = torch.bincount(best_positions, minlength=similarities.shape[1])
 top_winners = wins.topk(min(5, int((wins > 0).sum()))).indices.tolist()
 print(f"matrix: {similarities.shape[0]} query vectors x {similarities.shape[1]} document vectors")

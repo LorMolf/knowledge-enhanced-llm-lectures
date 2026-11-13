@@ -18,16 +18,16 @@ bfloat16 on a GPU that supports it and float32 otherwise. How many parameters
 did we actually load?
 """
 
-# 1. pin the model and revision so every run loads the same weights
+# pin the model and revision so every run loads the same weights
 GEMMA_MODEL_ID = "google/embeddinggemma-2"
 GEMMA_REVISION = "f9972ac22e696a105c482202646979e33e4b5a1e"
 
-# 2. pick a safe dtype: bf16 on capable GPUs, fp32 elsewhere (never fp16)
+# pick a safe dtype: bf16 on capable GPUs, fp32 elsewhere (never fp16)
 GEMMA_DTYPE = (
     torch.bfloat16 if DEVICE == "cuda" and torch.cuda.is_bf16_supported() else torch.float32
 )
 
-# 3. load the model with the audio tower disabled, keeping only text + image
+# load the model with the audio tower disabled, keeping only text + image
 gemma_model = SentenceTransformer(
     GEMMA_MODEL_ID,
     revision=GEMMA_REVISION,
@@ -36,6 +36,6 @@ gemma_model = SentenceTransformer(
     config_kwargs={"audio_config": None},
 )
 
-# 4. report the loaded parameter count and the text-only task prompts
+# report the loaded parameter count and the text-only task prompts
 print("Loaded parameters (M):", round(sum(p.numel() for p in gemma_model.parameters()) / 1e6))
 print("Prompts:", {name: gemma_model.prompts[name] for name in ("SearchQuery", "Document")})

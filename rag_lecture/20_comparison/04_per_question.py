@@ -8,7 +8,7 @@ the failures gather at the top instead of hiding in a wall of numbers.
 
 """
 
-# 1. rank of the first labelled hit per (question, run); NaN when none made the top-K
+# rank of the first labelled hit per (question, run); NaN when none made the top-K
 def first_hit_rank(run, qid):
     for rank, hit in enumerate(run[qid], 1):
         if hit["corpus_id"] in relevant_docs[qid]:
@@ -21,7 +21,7 @@ first_rank = pd.DataFrame(
     index=query_ids,
 )
 
-# 2. best run on the left, questions every run misses at the top
+# best run on the left, questions every run misses at the top
 run_order = comparison.set_index("model")["ndcg@10"].sort_values(ascending=False)
 first_rank = first_rank[[name for name in run_order.index if name in first_rank.columns]]
 first_rank = first_rank.loc[first_rank.isna().sum(axis=1).sort_values().index]

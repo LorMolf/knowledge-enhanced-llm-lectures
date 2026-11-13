@@ -1,7 +1,7 @@
 r"""
 <a name="section-04"></a>
 
-# 04. Explore actual embeddings with Atlas
+# Explore actual embeddings with Atlas
 
 ### Turn a matrix into something a widget can draw
 
@@ -22,7 +22,7 @@ def atlas_frame(texts, vectors, kinds, ids, method="pca"):
     vectors = np.asarray(vectors.detach().float().cpu() if torch.is_tensor(vectors) else vectors)
     assert len(texts) == len(vectors) == len(kinds) == len(ids) and len(texts) >= 3
 
-    # 1. the 2-D layout: PCA by default because it is instant
+    # the 2-D layout: PCA by default because it is instant
     if method == "umap":
         from umap import UMAP
         xy = UMAP(n_neighbors=min(15, len(texts) - 1), min_dist=0.1, metric="cosine",
@@ -30,7 +30,7 @@ def atlas_frame(texts, vectors, kinds, ids, method="pca"):
     else:
         xy = PCA(n_components=2, random_state=SEED).fit_transform(vectors)
 
-    # 2. neighbours in the original space, not in the projection
+    # neighbours in the original space, not in the projection
     nn = NearestNeighbors(n_neighbors=min(6, len(texts)), metric="cosine").fit(vectors)
     distances, indices = nn.kneighbors(vectors)
     neighbors = [

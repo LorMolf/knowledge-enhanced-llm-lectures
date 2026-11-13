@@ -12,7 +12,7 @@ each run actually solves.
 
 from trectools import TrecRun
 
-# 1. Convert each ranking into a TrecRun, one row per (query, doc, rank, score)
+# Convert each ranking into a TrecRun, one row per (query, doc, rank, score)
 trec_runs = {}
 for name in [name for name in ("BM25", "BGE", "BM25+BGE RRF", "HippoRAG2") if name in all_rankings]:
     rows = [
@@ -31,7 +31,7 @@ for name in [name for name in ("BM25", "BGE", "BM25+BGE RRF", "HippoRAG2") if na
     run.load_run_from_dataframe(pd.DataFrame(rows))
     trec_runs[name] = run
 
-# 2. Pairwise top-K overlap: diagonal is a run against itself, so it equals MAX_K
+# Pairwise top-K overlap: diagonal is a run against itself, so it equals MAX_K
 trec_names = list(trec_runs)
 overlap = pd.DataFrame(
     [
@@ -42,5 +42,5 @@ overlap = pd.DataFrame(
     columns=trec_names,
 )
 
-# 3. Show the agreement matrix; off-diagonal cells are the interesting ones
+# Show the agreement matrix; off-diagonal cells are the interesting ones
 display(overlap.round(1))

@@ -16,11 +16,11 @@ import time
 
 from huggingface_hub import hf_hub_download
 
-# 1. Check the import first: otherwise the download happens for a server that cannot start.
+# Check the import first: otherwise the download happens for a server that cannot start.
 LLAMA_INSTALLED = importlib.util.find_spec("llama_cpp") is not None
 SERVER_READY = server_ready()
 
-# 2. Download once (cached), start detached, then poll the route and the process together.
+# Download once (cached), start detached, then poll the route and the process together.
 if not SERVER_READY and LLAMA_INSTALLED:
     model_path = hf_hub_download(LLM_REPO, LLM_FILE, revision=LLM_REVISION)
     log = open("llama-server.log", "wb")

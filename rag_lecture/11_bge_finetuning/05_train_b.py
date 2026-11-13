@@ -11,7 +11,7 @@ of four.
 from sentence_transformers import SentenceTransformerTrainer, SentenceTransformerTrainingArguments
 from sentence_transformers.losses import MultipleNegativesRankingLoss
 
-# 1. the same budget for every method compared in this section
+# the same budget for every method compared in this section
 bge_args = SentenceTransformerTrainingArguments(
     output_dir="models/bge-in-batch",
     max_steps=TRAIN_STEPS,
@@ -27,7 +27,7 @@ bge_args = SentenceTransformerTrainingArguments(
     prompts={"query": BGE_QUERY_PROMPT},
 )
 
-# 2. in-batch negatives, then the run
+# in-batch negatives, then the run
 bge_trainer = SentenceTransformerTrainer(
     model=bge_train_model,
     args=bge_args,

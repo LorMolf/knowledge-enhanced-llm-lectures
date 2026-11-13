@@ -6,7 +6,7 @@ Encode every page once, as an image, and every question with the `SearchQuery` p
 
 import time
 
-# 1. encode every page image once, timing the pass
+# encode every page image once, timing the pass
 started = time.perf_counter()
 gemma_page_embeddings = (
     gemma_model.encode(
@@ -20,7 +20,7 @@ gemma_page_embeddings = (
 )
 gemma_encode_seconds = time.perf_counter() - started
 
-# 2. encode every question with the SearchQuery prompt
+# encode every question with the SearchQuery prompt
 gemma_query_embeddings = (
     gemma_model.encode(
         list(mm_queries.values()),

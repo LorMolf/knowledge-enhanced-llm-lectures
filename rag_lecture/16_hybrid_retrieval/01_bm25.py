@@ -1,7 +1,7 @@
 r"""
 <a name="section-16"></a>
 
-# 16. Lexical, hybrid and reranked retrieval
+# Lexical, hybrid and reranked retrieval
 
 BM25 rewards matching terms while accounting for term frequency and document
 length. Unlike dense embeddings, this simple baseline does not understand
@@ -15,11 +15,11 @@ ID, including ties at the cutoff. What does the first hit actually discuss?
 # Score every query with BM25 and keep the top MAX_K hits per query.
 bm25_rankings = {}
 for qid, question in queries.items():
-    # 1. score each corpus doc against the tokenized question
+    # score each corpus doc against the tokenized question
     scores = lexical_index.get_scores(lexical_tokens(question))
-    # 2. rank by descending score, breaking ties by ascending paper ID
+    # rank by descending score, breaking ties by ascending paper ID
     order = sorted(range(len(corpus_ids)), key=lambda i: (-float(scores[i]), corpus_ids[i]))[:MAX_K]
-    # 3. store the ranked hits with their scores
+    # store the ranked hits with their scores
     bm25_rankings[qid] = [{"corpus_id": corpus_ids[i], "score": float(scores[i])} for i in order]
 
 # Inspect the top hit for the example query and check whether it is labelled relevant.

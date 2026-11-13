@@ -10,15 +10,15 @@ use the checkpoint's configured lengths, which may differ from the dense
 models' 256-token limit. How many vectors represent the first inputs?
 """
 
-# 1. encode queries with the role-specific method (applies query formatting + expansion)
+# encode queries with the role-specific method (applies query formatting + expansion)
 colbert_queries = colbert_model.encode_query(query_texts, show_progress_bar=True)
 
-# 2. encode documents with the role-specific method (applies doc formatting + masking)
+# encode documents with the role-specific method (applies doc formatting + masking)
 colbert_docs = colbert_model.encode_document(
     corpus_texts, convert_to_numpy=True, show_progress_bar=True
 )
 
-# 3. show the first inputs and the resulting per-input vector counts
+# show the first inputs and the resulting per-input vector counts
 print("First question:", query_texts[0])
 print("First document:", corpus_texts[0][:400])
 print("Token-vector shapes:", colbert_queries[0].shape, colbert_docs[0].shape)

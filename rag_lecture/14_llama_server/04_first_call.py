@@ -11,7 +11,7 @@ answer without thinking: retrieval supplies the evidence, not a longer deliberat
 
 import time
 
-# 1. one question from the frozen set, asked twice with identical sampling
+# one question from the frozen set, asked twice with identical sampling
 example_qid = query_ids[0]
 example_question = queries[example_qid]
 
@@ -23,7 +23,7 @@ def timed(question, reasoning):
     return payload, time.monotonic() - started
 
 
-# 2. the switch, per request: same server, same weights, different template kwarg
+# the switch, per request: same server, same weights, different template kwarg
 thinking, seconds_on = timed(example_question, True)
 direct, seconds_off = timed(example_question, False)
 
@@ -35,7 +35,7 @@ for label, payload, seconds in (("thinking", thinking, seconds_on), ("direct", d
         f" | trace {len(thoughts)} chars | answer {len(message['content'])} chars"
     )
 
-# 3. what the two answers actually say, and the trace that produced the first one
+# what the two answers actually say, and the trace that produced the first one
 print("\nQuestion:", example_question)
 print("Answer with thinking off:", direct["choices"][0]["message"]["content"][:400])
 print("Trace, first 300 chars:", (thinking["choices"][0]["message"].get("reasoning_content") or "")[:300])

@@ -10,7 +10,7 @@ our explicit ID-based selection keeps this matched cohort and its global filter
 visible without an adapter.
 """
 
-# 1. pick one negative per question under each strategy
+# pick one negative per question under each strategy
 negative_ids = {"random": [], "bm25": [], "dense": []}
 for i, qid in enumerate(train_qids):
     bm25_scores = lexical_index.get_scores(lexical_tokens(train_queries[qid]))
@@ -22,19 +22,19 @@ for i, qid in enumerate(train_qids):
     for method, index in choices.items():
         negative_ids[method].append(corpus_ids[index])
 
-# 2. guard: no mined negative may be a known training positive
+# guard: no mined negative may be a known training positive
 assert all(
     len(ids) == len(train_qids) and set(ids).isdisjoint(all_training_positive_ids)
     for ids in negative_ids.values()
 ), "A mined negative is a known training positive."
 
-# 3. attach the chosen negatives as a column on the training pairs
+# attach the chosen negatives as a column on the training pairs
 negative_datasets = {
     method: train_pairs.add_column("negative", [corpus[doc_id] for doc_id in ids])
     for method, ids in negative_ids.items()
 }
 
-# 4. show one question with its positive and each strategy's negative
+# show one question with its positive and each strategy's negative
 display(
     {
         "question": train_queries[train_qids[0]],

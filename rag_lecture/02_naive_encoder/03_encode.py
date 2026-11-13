@@ -7,11 +7,11 @@ use the same weights, truncation and data. What are the resulting tensor shapes?
 """
 
 def encode_biomed(texts, encoder, tokenizer, pooling=None, batch_size=16):
-    # 1. collect one CPU tensor per batch, then concatenate at the end
+    # collect one CPU tensor per batch, then concatenate at the end
     batches = []
     with torch.inference_mode():
         for start in range(0, len(texts), batch_size):
-            # 2. tokenize this slice with the shared truncation budget
+            # tokenize this slice with the shared truncation budget
             inputs = tokenizer(
                 texts[start : start + batch_size],
                 padding=True,
@@ -19,9 +19,9 @@ def encode_biomed(texts, encoder, tokenizer, pooling=None, batch_size=16):
                 max_length=MAX_DOC_TOKENS,
                 return_tensors="pt",
             ).to(next(encoder.parameters()).device)
-            # 3. run the encoder once and keep the last hidden state
+            # run the encoder once and keep the last hidden state
             hidden = encoder(**inputs).last_hidden_state
-            # 4. pool: token-zero by default, or the native pooling module
+            # pool: token-zero by default, or the native pooling module
             vectors = (
                 hidden[:, 0]
                 if pooling is None
@@ -33,10 +33,10 @@ def encode_biomed(texts, encoder, tokenizer, pooling=None, batch_size=16):
     return torch.cat(batches)
 
 
-# 5. encode both sides with the same weights so shapes are comparable
+# encode both sides with the same weights so shapes are comparable
 naive_query_embeddings = encode_biomed(query_texts, naive_model, naive_tokenizer)
 naive_corpus_embeddings = encode_biomed(corpus_texts, naive_model, naive_tokenizer)
 
-# 6. the shapes answer the question: (n_texts, hidden_size) on CPU
+# the shapes answer the question: (n_texts, hidden_size) on CPU
 print("questions:", naive_query_embeddings.shape, "documents:", naive_corpus_embeddings.shape)
 assert naive_query_embeddings.device.type == naive_corpus_embeddings.device.type == "cpu"

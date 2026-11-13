@@ -18,7 +18,7 @@ QID = query_ids[0]
 QUESTION = query_texts[0]
 LABELLED = sorted(relevant_docs[QID])[0]
 
-# 1. five papers that share the question's words without being the labelled answer
+# five papers that share the question's words without being the labelled answer
 question_terms = {word for word in re.findall(r"[a-z]{4,}", QUESTION.lower())} - STOP
 
 
@@ -30,7 +30,7 @@ distractors = sorted((d for d in corpus_ids if d != LABELLED), key=overlap, reve
 CANDIDATES = [LABELLED] + distractors
 SHORT = ["labelled"] + [f"D{i}" for i in range(1, 6)]
 
-# 2. count vectors over the question's vocabulary, matched on word boundaries
+# count vectors over the question's vocabulary, matched on word boundaries
 counts = pd.DataFrame(
     [[len(re.findall(rf"\b{word}\b", corpus[doc_id].lower())) for word in sorted(question_terms)]
      for doc_id in CANDIDATES],
@@ -39,14 +39,14 @@ counts = pd.DataFrame(
 query_counts = np.array(
     [len(re.findall(rf"\b{word}\b", QUESTION.lower())) for word in sorted(question_terms)], float)
 
-# 3. a cosine is a dot product over both norms: one pair, written out
+# a cosine is a dot product over both norms: one pair, written out
 a, b = counts.loc["labelled"].to_numpy(float), counts.loc["D1"].to_numpy(float)
 print("labelled vector:", a.astype(int), "| D1 vector:", b.astype(int))
 print("labelled . D1 =", float(a @ b),
       "| |labelled| =", round(float(np.linalg.norm(a)), 2),
       "| |D1| =", round(float(np.linalg.norm(b)), 2))
 
-# 4. two rankings over the same six candidates, both as normalised cosines
+# two rankings over the same six candidates, both as normalised cosines
 count_matrix = counts.to_numpy(float)
 count_cosine = (count_matrix @ query_counts) / (
     np.linalg.norm(count_matrix, axis=1) * np.linalg.norm(query_counts) + 1e-9)
@@ -66,7 +66,7 @@ display(pd.DataFrame({
     "first 60 chars": [corpus[doc_id][:60].replace("\n", " ") for doc_id in CANDIDATES],
 }))
 
-# 5. dumbbell: one row per paper, a dot per scorer, sorted so the model's best is on top
+# dumbbell: one row per paper, a dot per scorer, sorted so the model's best is on top
 order = np.argsort(model_cosine)
 fig, ax = plt.subplots(figsize=(7.6, 3.4), constrained_layout=True)
 for row, index in enumerate(order):
@@ -83,7 +83,7 @@ ax.legend(frameon=False, fontsize=8, loc="lower right")
 ax.set_title("sorted by the model: the labelled answer is the top row", fontsize=9, loc="left")
 plt.show()
 
-# 6. where the labelled answer lands under each ranking, and what beat it
+# where the labelled answer lands under each ranking, and what beat it
 count_rank = int(pd.Series(count_cosine).rank(ascending=False).iloc[0])
 model_rank = int(pd.Series(model_cosine).rank(ascending=False).iloc[0])
 best_count = SHORT[int(np.argmax(count_cosine))]

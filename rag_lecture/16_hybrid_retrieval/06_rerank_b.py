@@ -2,14 +2,14 @@ r"""
 The reranker is a small published checkpoint (`cross-encoder/ms-marco-MiniLM-L-6-v2`, 22M parameters) trained on general web passages, not biomedical ones. Compare the first paper before and after: does its text support the question better? A reranker improves the order of what the retriever returned; it cannot recover a paper the retriever never found.
 """
 
-# 5. evaluate the reranked run and compare it side by side with plain BGE
+# evaluate the reranked run and compare it side by side with plain BGE
 reranked_metrics = evaluate_run("BGE + cross-encoder", reranked_rankings)
 display(
     pd.DataFrame([row for row in evaluation_rows if row["model"] in ("BGE", "BGE + cross-encoder")])
     .set_index("model")[["accuracy@1", "recall@10", "mrr@10", "ndcg@10"]]
 )
 
-# 6. pick one question whose order actually moved and show the new top paper
+# pick one question whose order actually moved and show the new top paper
 moved_qid = next(
     (
         qid
@@ -30,5 +30,5 @@ display(
     }
 )
 
-# 7. free the reranker before the next cell
+# free the reranker before the next cell
 del reranker

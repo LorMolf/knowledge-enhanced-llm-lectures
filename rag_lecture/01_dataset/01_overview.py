@@ -55,7 +55,7 @@ back to a paper ID and its text.
 
 <a name="section-01"></a>
 
-# 01. Dataset and linked papers
+# Dataset and linked papers
 
 ### How this runs
 

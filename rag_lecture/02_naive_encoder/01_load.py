@@ -1,7 +1,7 @@
 r"""
 <a name="section-02"></a>
 
-# 02. A naïve AutoModel encoder
+# A naïve AutoModel encoder
 
 A transformer produces a contextual vector for **each token**. Let's start with
 its first token, `[CLS]`, as a whole-text representation. This checkpoint was
@@ -19,12 +19,12 @@ the first few coordinates of its first tokens look like?
 
 from transformers import AutoModel, AutoTokenizer
 
-# 1. Load the biomedical checkpoint and its matching tokenizer
+# Load the biomedical checkpoint and its matching tokenizer
 PUBMED_MODEL_ID = "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext"
 naive_tokenizer = AutoTokenizer.from_pretrained(PUBMED_MODEL_ID)
 naive_model = AutoModel.from_pretrained(PUBMED_MODEL_ID).to(DEVICE).eval()
 
-# 2. Tokenize the first question, truncated to the document budget
+# Tokenize the first question, truncated to the document budget
 tokens = naive_tokenizer(
     query_texts[0], return_tensors="pt", truncation=True, max_length=MAX_DOC_TOKENS
 )
@@ -32,11 +32,11 @@ print("question:", query_texts[0])
 print("tokens:", naive_tokenizer.convert_ids_to_tokens(tokens["input_ids"][0]))
 print("input shape:", tokens["input_ids"].shape)
 
-# 3. Run the encoder once; no gradients needed for a forward pass
+# Run the encoder once; no gradients needed for a forward pass
 with torch.inference_mode():
     raw_output = naive_model(**tokens.to(DEVICE))
 print("token-state shape:", raw_output.last_hidden_state.shape)
 print("First three tokens, first four coordinates:", raw_output.last_hidden_state[0, :3, :4].cpu())
 
-# 4. Free the output tensor before the next cell
+# Free the output tensor before the next cell
 del raw_output

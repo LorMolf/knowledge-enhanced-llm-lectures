@@ -4,19 +4,19 @@ The evaluator table says whether the ranking moved. A 2x2 grid says why - three 
 
 import torch.nn.functional as F
 
-# 1. build the labelled mask: True where a paper is relevant to a question
+# build the labelled mask: True where a paper is relevant to a question
 is_labelled = torch.tensor(
     [[doc_id in relevant_docs[qid] for doc_id in corpus_ids] for qid in query_ids]
 )
 
-# 2. three encoders to compare: untrained CLS, BGE before, BGE after 40 steps
+# three encoders to compare: untrained CLS, BGE before, BGE after 40 steps
 views = {
     "PubMedBERT CLS": (naive_query_embeddings, naive_corpus_embeddings),
     "BGE before": (bge_query_embeddings, bge_corpus_embeddings),
     "BGE after 40 steps": (bge_ft_test, bge_ft_docs),
 }
 
-# 3. one panel per encoder, plus a fourth for the loss log
+# one panel per encoder, plus a fourth for the loss log
 fig, axes = plt.subplots(2, 2, figsize=(11, 6.5))
 for ax, (title, (question_vectors, paper_vectors)) in zip(axes.flat, views.items()):
     # 3a. cosine similarity of every question against every paper
@@ -45,6 +45,6 @@ axes.flat[3].set(title="training loss", xlabel="step", ylabel="loss")
 plt.tight_layout()
 plt.show()
 
-# 3. free the trainer and its tensors now that the figure is drawn
+# free the trainer and its tensors now that the figure is drawn
 del bge_trainer, bge_train_model, bge_ft_docs, bge_ft_val, bge_ft_test
 print("freed the trainer; three densities and the loss are on one grid")

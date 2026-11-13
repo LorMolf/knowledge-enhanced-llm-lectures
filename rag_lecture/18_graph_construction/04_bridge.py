@@ -4,10 +4,10 @@ The previous graph came from one paper. Graph retrieval starts from a question: 
 
 import matplotlib.pyplot as plt
 
-# 1. Collect the papers for this question: labelled ones plus BGE's top hits.
+# Collect the papers for this question: labelled ones plus BGE's top hits.
 bridge_ids = sorted(relevant_docs[example_qid] | {hit["corpus_id"] for hit in all_rankings["BGE"][example_qid]})
 
-# 2. Build a bipartite paper-entity graph by extracting entities from each paper.
+# Build a bipartite paper-entity graph by extracting entities from each paper.
 paper_graph = nx.Graph()
 for doc_id in bridge_ids:
     found = extractor.extract_entities(
@@ -17,10 +17,10 @@ for doc_id in bridge_ids:
         for span in spans:
             paper_graph.add_edge(doc_id, span["text"].casefold())
 
-# 3. Free the extractor; we only need the graph from here on.
+# Free the extractor; we only need the graph from here on.
 del extractor
 
-# 4. Keep only entities mentioned by at least two of these papers (the bridges).
+# Keep only entities mentioned by at least two of these papers (the bridges).
 shared = [
     node
     for node in paper_graph

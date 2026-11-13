@@ -8,7 +8,7 @@ encoder never saw the connection. The worst case is then printed in words, both 
 so the miss can be judged rather than trusted.
 """
 
-# 1. the labelled paper's true rank in the full corpus, not just the top ten
+# the labelled paper's true rank in the full corpus, not just the top ten
 rows = []
 normalised_corpus = F.normalize(naive_corpus_embeddings, dim=1)
 for position, qid in enumerate(query_ids[:5]):
@@ -29,7 +29,7 @@ table = pd.DataFrame(rows).set_index("question id")
 table["gap to rank 1"] = (table["score of rank 1"] - table["score of labelled"]).round(3)
 display(table)
 
-# 2. one dot per question on a log rank axis: 1 is perfect, 1000 is hopeless
+# one dot per question on a log rank axis: 1 is perfect, 1000 is hopeless
 fig, ax = plt.subplots(constrained_layout=True)
 ranks = table["labelled rank"].to_numpy(float)
 rng = np.random.default_rng(SEED)
@@ -44,7 +44,7 @@ panel(ax, f"rank of the labelled paper among {len(corpus_ids):,}", "",
       "where the first right paper sits, one dot per question\nlog scale; the dotted line is the median")
 plt.show()
 
-# 3. the worst row in words: the question, the labelled paper, and what beat it
+# the worst row in words: the question, the labelled paper, and what beat it
 worst = table["labelled rank"].idxmax()
 print(f"Q{list(table.index).index(worst) + 1} ({worst}):", queries[worst][:110])
 print("labelled paper:", corpus[sorted(relevant_docs[worst])[0]][:200].replace("\n", " "))

@@ -13,11 +13,11 @@ Before looking at any numbers: with one labelled page among 300, what accuracy@1
 would a random ranking reach?
 """
 
-# 1. Freeze the corpus ids once so every model is scored against the same pages.
+# Freeze the corpus ids once so every model is scored against the same pages.
 mm_query_ids = list(mm_queries)
 mm_page_ids = list(mm_pages)
 
-# 2. Build the shared evaluator with the section 05 cutoffs; no CSV side effects.
+# Build the shared evaluator with the section 05 cutoffs; no CSV side effects.
 mm_evaluator = InformationRetrievalEvaluator(
     mm_queries,
     mm_pages,
@@ -30,16 +30,16 @@ mm_evaluator = InformationRetrievalEvaluator(
     write_csv=False,
 )
 
-# 3. One ledger for multimodal scores, kept apart from the section 20 rows.
+# One ledger for multimodal scores, kept apart from the section 20 rows.
 mm_rows = []
 
 
 def evaluate_mm(name, rankings):
-    # 4. Rank order is all the evaluator needs; it computes the metrics itself.
+    # Rank order is all the evaluator needs; it computes the metrics itself.
     ordered = [rankings[qid] for qid in mm_evaluator.queries_ids]
     metrics = mm_evaluator.compute_metrics(ordered)
 
-    # 5. Flatten {metric: {k: value}} into one row keyed by "metric@k".
+    # Flatten {metric: {k: value}} into one row keyed by "metric@k".
     row = {"model": name}
     row.update(
         {
@@ -49,11 +49,11 @@ def evaluate_mm(name, rankings):
         }
     )
 
-    # 6. Rerunning a model replaces its row instead of appending a duplicate.
+    # Rerunning a model replaces its row instead of appending a duplicate.
     mm_rows[:] = [existing for existing in mm_rows if existing["model"] != name]
     mm_rows.append(row)
     return row
 
 
-# 7. Show the ledger is empty and ready before any model is scored.
+# Show the ledger is empty and ready before any model is scored.
 print(f"evaluator ready: {len(mm_query_ids)} queries, {len(mm_page_ids)} pages, {len(mm_rows)} rows")

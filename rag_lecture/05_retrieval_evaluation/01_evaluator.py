@@ -1,7 +1,7 @@
 r"""
 <a name="section-05"></a>
 
-# 05. Evaluate retrieval
+# Evaluate retrieval
 
 ### The evaluator, configured once
 
@@ -17,7 +17,7 @@ cell only says which questions and documents it will score.
 
 from sentence_transformers.evaluation import InformationRetrievalEvaluator
 
-# 1. one configuration, used for both question sets
+# one configuration, used for both question sets
 METRIC_KWARGS = dict(
     mrr_at_k=KS,
     ndcg_at_k=KS,
@@ -27,10 +27,10 @@ METRIC_KWARGS = dict(
     write_csv=False,
 )
 
-# 2. test questions: never used for training or for choosing a model
+# test questions: never used for training or for choosing a model
 evaluator = InformationRetrievalEvaluator(queries, corpus, relevant_docs, **METRIC_KWARGS)
 
-# 3. validation questions: the only signal training may use
+# validation questions: the only signal training may use
 validation_evaluator = InformationRetrievalEvaluator(
     val_queries, corpus, val_relevant_docs, **METRIC_KWARGS
 )

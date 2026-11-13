@@ -11,7 +11,7 @@ sampler could keep more; this one is auditable.
 11 to 13, so the three methods are compared on exactly the same rows.
 """
 
-# 1. one exclusive positive per question, chosen as the smallest ID for determinism
+# one exclusive positive per question, chosen as the smallest ID for determinism
 selected_positive_ids = {
     qid: min(exclusive)
     for qid in all_train_qids
@@ -19,10 +19,10 @@ selected_positive_ids = {
 }
 train_qids = [qid for qid in all_train_qids if qid in selected_positive_ids]
 
-# 2. the batch size is a property of the cohort, so it lives with it
+# the batch size is a property of the cohort, so it lives with it
 TRAIN_BATCH_SIZE = 8
 
-# 3. guards: enough rows to fill a batch, and no known positive shared across rows
+# guards: enough rows to fill a batch, and no known positive shared across rows
 assert len(train_qids) >= TRAIN_BATCH_SIZE, (
     f"Need at least {TRAIN_BATCH_SIZE} exclusive-positive training questions, found {len(train_qids)}"
 )

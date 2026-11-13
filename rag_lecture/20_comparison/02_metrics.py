@@ -12,10 +12,10 @@ are paper IDs rather than averages.
 
 import matplotlib.pyplot as plt
 
-# 1. one row per run, ordered by the metric we care about most (nDCG@10)
+# one row per run, ordered by the metric we care about most (nDCG@10)
 metric_table = comparison.set_index("model")[["recall@10", "ndcg@10"]].sort_values("ndcg@10")
 
-# 2. draw both metrics on the same axis so the gap per run is visible
+# draw both metrics on the same axis so the gap per run is visible
 fig, ax = plt.subplots(figsize=(8, 0.3 * len(metric_table) + 1.8))
 for column, marker in (("recall@10", "o"), ("ndcg@10", "s")):
     ax.scatter(metric_table[column], metric_table.index, marker=marker, s=30, label=column)
@@ -25,7 +25,7 @@ ax.legend(frameon=False, loc="lower right")
 plt.tight_layout()
 plt.show()
 
-# 3. drill into one query: what does each system put at rank 1?
+# drill into one query: what does each system put at rank 1?
 comparison_qid = query_ids[0]
 print("Question:", comparison_qid, queries[comparison_qid])
 

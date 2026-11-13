@@ -6,11 +6,11 @@ Each tool result goes back under its matching call ID. Save the model's actual
 query and returned papers: did it use the same words as the original question?
 """
 
-# 1. append the assistant's tool-call message so the transcript stays valid
+# append the assistant's tool-call message so the transcript stays valid
 tool_messages.append(requested)
 first_tool_searches = []
 
-# 2. run each requested call, validating name and arguments first
+# run each requested call, validating name and arguments first
 for call in requested["tool_calls"]:
     if call["function"]["name"] != "search_papers":
         raise ValueError("Unexpected tool name")
@@ -18,19 +18,19 @@ for call in requested["tool_calls"]:
     if not isinstance(args, dict) or set(args) - {"query", "k"} or "query" not in args:
         raise ValueError("Invalid tool arguments")
 
-    # 3. execute the allowlisted search and remember what was asked
+    # execute the allowlisted search and remember what was asked
     result = search_papers(**args)
     first_tool_searches.append({"query": args["query"], "k": args.get("k", 5), "results": result})
 
-    # 4. return the result under its matching call ID
+    # return the result under its matching call ID
     tool_messages.append(
         {"role": "tool", "tool_call_id": call["id"], "content": json.dumps(result)}
     )
 
-# 5. ask the model to answer using the tool results
+# ask the model to answer using the tool results
 first_tool_answer = chat(tool_messages)
 
-# 6. show each query and its papers, then the final answer
+# show each query and its papers, then the final answer
 for search in first_tool_searches:
     print("tool query:", search["query"], "| k:", search["k"])
     display(pd.DataFrame(search["results"]))

@@ -8,7 +8,7 @@ Writing the frame to parquet is what makes a kernel restart cheap.
 
 """
 
-# 1. one row per (question, condition), 96 short calls
+# one row per (question, condition), 96 short calls
 if not RUN_LLM and RAG_CACHE.exists():
     rag_frame = pd.read_parquet(RAG_CACHE)
     print("reused", len(rag_frame), "cached answers from", RAG_CACHE)
@@ -28,7 +28,7 @@ else:
             rag_rows.append(row)
         print(f"{number}/{len(query_ids)} {qid} done")
 
-    # 2. write the cache so a kernel restart does not pay for this twice
+    # write the cache so a kernel restart does not pay for this twice
     rag_frame = pd.DataFrame(rag_rows)
     RAG_CACHE.parent.mkdir(parents=True, exist_ok=True)
     rag_frame.to_parquet(RAG_CACHE)

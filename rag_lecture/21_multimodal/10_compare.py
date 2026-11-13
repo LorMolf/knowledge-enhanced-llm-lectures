@@ -12,13 +12,13 @@ runs is worth less than one question moving. Which cutoffs does the image tower 
 where does the text-only baseline still hold?
 """
 
-# 1. One table, indexed by run, so the metric columns sit side by side.
+# One table, indexed by run, so the metric columns sit side by side.
 mm_table = pd.DataFrame(mm_rows).set_index("model")
 
-# 2. The numbers first, because three significant figures beat a bar chart.
+# The numbers first, because three significant figures beat a bar chart.
 display(mm_table[["accuracy@1", "accuracy@3", "accuracy@10", "mrr@10", "ndcg@10"]].round(3))
 
-# 3. One row per run, one dot per metric: the ranking is the reading, not the bar area.
+# One row per run, one dot per metric: the ranking is the reading, not the bar area.
 metrics_shown = ["accuracy@1", "ndcg@10"]
 fig, ax = plt.subplots(constrained_layout=True)
 for row, (name, values) in enumerate(mm_table[metrics_shown].iterrows()):

@@ -1,7 +1,7 @@
 r"""
 <a name="section-07"></a>
 
-# 07. Asymmetric dense retrieval
+# Asymmetric dense retrieval
 
 A dense retriever compresses each question and each document to one vector. A
 similarity score orders the documents; the representation itself depends on
@@ -21,14 +21,14 @@ parts of the pipeline can be computed before a question arrives?
 # Load the BGE encoder once; every later section reuses this same model.
 from sentence_transformers import SentenceTransformer
 
-# 1. constants for this section: model id and the query-side instruction
+# constants for this section: model id and the query-side instruction
 BGE_MODEL_ID = "BAAI/bge-base-en-v1.5"
 BGE_QUERY_PROMPT = "Represent this sentence for searching relevant passages: "
 
-# 2. build the encoder on the shared device and cap its input length
+# build the encoder on the shared device and cap its input length
 bge_model = SentenceTransformer(BGE_MODEL_ID, device=DEVICE)
 bge_model.max_seq_length = MAX_DOC_TOKENS
 
-# 3. show the loaded model and one query as the model will actually see it
+# show the loaded model and one query as the model will actually see it
 print(bge_model)
 print("Example query input:", BGE_QUERY_PROMPT + query_texts[0])

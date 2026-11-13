@@ -12,19 +12,19 @@ loss_histories, val_scores = {}, {}
 for method, dataset in negative_datasets.items():
     print(f"--- {method}: {len(dataset)} training rows")
 
-    # 1. train, then score validation + test
+    # train, then score validation + test
     trainer, model = train_one(method, dataset)
     val_metrics, test_metrics = score_one(method, model)
 
-    # 2. keep what the comparison needs, and log the validation curve
+    # keep what the comparison needs, and log the validation curve
     loss_histories[method] = trainer.state.log_history
     val_scores[method] = {"ndcg@10": val_metrics["ndcg@10"], "mrr@10": val_metrics["mrr@10"]}
 
-    # 3. the row and the loss curve, side by side for this method
+    # the row and the loss curve, side by side for this method
     display({"method": method, "validation": val_metrics, "test": test_metrics})
     show_training_comparison("BGE", f"BGE {method} negative")
 
-    # 4. free the GPU before the next method
+    # free the GPU before the next method
     del trainer, model
     torch.cuda.empty_cache()
 

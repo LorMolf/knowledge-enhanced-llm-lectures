@@ -44,7 +44,7 @@ back to a paper ID and its text.
 11. [Fine-tune BGE](#section-11)
 12. [Mine and compare negatives](#section-12)
 13. [Fine-tune ColBERT](#section-13)
-14. [A reasoning model through llama-server](#section-14)
+14. [A reasoning model, served from Python](#section-14)
 15. [Dense RAG](#section-15)
 16. [BM25, hybrid fusion and reranking](#section-16)
 17. [Retrieval tools and a second search](#section-17)

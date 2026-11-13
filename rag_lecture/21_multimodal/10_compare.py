@@ -14,6 +14,7 @@ where does the text-only baseline still hold?
 
 # One table, indexed by run, so the metric columns sit side by side.
 mm_table = pd.DataFrame(mm_rows).set_index("model")
+mm_table = mm_table.reindex(sorted(mm_table.index, key=lambda name: int(next(w for w in name.split() if w.isdigit()))))
 
 # The numbers first, because three significant figures beat a bar chart.
 display(mm_table[["accuracy@1", "accuracy@3", "accuracy@10", "mrr@10", "ndcg@10"]].round(3))
@@ -31,9 +32,9 @@ ax.axvline(0.03, color=ACCENT, linestyle=":", linewidth=1)
 ax.annotate("random", (0.03, -0.45), textcoords="offset points", xytext=(3, 0),
             fontsize=7, color=ACCENT)
 ax.set_yticks(range(len(mm_table)), mm_table.index, fontsize=8)
-ax.set(xlim=(0, 1), ylim=(-0.6, len(mm_table) - 0.35))
+ax.set(xlim=(0, 1.06), ylim=(-0.6, len(mm_table) - 0.35))
 ax.scatter([], [], color=OURS, s=40, label="nDCG@10")
 ax.scatter([], [], color=BASELINE, s=40, label="accuracy@1")
-ax.legend(loc="lower right")
+ax.legend(loc="upper left", ncol=2)
 panel(ax, "score", "", "page-image retrieval, 300 pages and 100 questions\nsame labels and evaluator for every row")
 plt.show()

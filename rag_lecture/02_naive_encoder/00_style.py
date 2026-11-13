@@ -25,6 +25,7 @@ plt.rcParams.update({
     "xtick.major.width": 0.8, "ytick.major.width": 0.8,
     "axes.grid": False, "axes.spines.top": False, "axes.spines.right": False,
     "legend.frameon": False, "lines.linewidth": 1.5, "lines.markersize": 3.5,
+    "axes.prop_cycle": plt.cycler(color=[OURS, BASELINE, ACCENT, MUTED]),
 })
 
 

@@ -94,6 +94,11 @@ uv pip install --system \
   "trectools==0.0.50" "ranx>=0.3.20,<0.4" "rank-bm25==0.2.2" "wandb>=0.19" \
   "gliner2[local]==2.1.0" "networkx>=3.4" "requests" "pyarrow" "openai>=1.60"
 
+# Colab ships torchao 0.10, and the peft that sentence-transformers installs refuses
+# anything below 0.16 by raising on import. The lecture never uses torchao, so remove it
+# rather than pull a build pinned against Colab's torch.
+uv pip uninstall torchao >/dev/null 2>&1 || true
+
 # llama.cpp's OpenAI-compatible server. Prebuilt CUDA wheels exist, but only up to cp312
 # and Colab now runs 3.13, so the wheel is tried first and the source build is the fallback.
 # The architecture is pinned: without it nvcc builds for a spread of GPUs it will never see.

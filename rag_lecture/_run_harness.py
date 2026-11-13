@@ -75,11 +75,20 @@ def main() -> int:
             break
 
         try:
+            # Reset before the cell: what matters is the peak inside it, not what survives it.
+            try:
+                import torch
+                if torch.cuda.is_available():
+                    torch.cuda.reset_peak_memory_stats()
+            except Exception:
+                pass
             exec(compile(src, f"cell{i}", "exec"), ns)
             try:
                 import torch
                 if torch.cuda.is_available():
-                    head_mem = f" [{torch.cuda.memory_allocated() / 1e9:.1f} GB]"
+                    peak = torch.cuda.max_memory_allocated() / 1e9
+                    reserved = torch.cuda.max_memory_reserved() / 1e9
+                    head_mem = f" [peak {peak:.1f} GB, reserved {reserved:.1f} GB]"
                 else:
                     head_mem = ""
             except Exception:

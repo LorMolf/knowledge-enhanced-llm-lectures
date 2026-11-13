@@ -4,9 +4,8 @@ r"""
 [EmbeddingGemma 2](https://huggingface.co/google/embeddinggemma-2) (Apache 2.0,
 [technical report](https://arxiv.org/abs/2610.37364)) embeds text, images, video
 and audio into one 768-dimensional space. Each modality encoder is loaded on
-demand. Both ids in this section are public and were checked against the hub: this one at
-revision `f9972ac2`, and `facebook/meta-encoder-v1` at `ed04ebd4` in section 21/08. We
-need text and images, so we switch the audio tower off with
+demand. The id is public and was checked against the hub at revision `f9972ac2`. We need
+text and images, so we switch the audio tower off with
 `config_kwargs`, which leaves about 440M parameters. In Sentence Transformers,
 one input is a dict such as `{"image": page}`. See the
 [multimodal guide](https://huggingface.co/blog/multimodal-sentence-transformers)

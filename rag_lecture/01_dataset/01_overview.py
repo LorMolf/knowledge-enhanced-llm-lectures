@@ -74,9 +74,7 @@ project's Python kernel when you run it on your own machine instead of Colab.
 Encoder comparisons may run on CPU, but the training sections explicitly require
 CUDA. Gemma 4 12B runs in a separate `llama-server` process, which the notebook starts
 for you in section 14; HippoRAG uses its isolated environment and can make many
-extraction requests. Section 21 needs a GPU: EmbeddingGemma 2 is small, but
-MetaEncoder v1 needs about 64 GB of free GPU memory and the section says so
-instead of stopping the notebook.
+extraction requests. Section 21 needs a GPU, though EmbeddingGemma 2 is small enough for a free T4.
 
 ### Install the pinned stack
 

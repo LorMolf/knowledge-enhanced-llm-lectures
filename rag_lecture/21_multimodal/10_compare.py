@@ -1,25 +1,37 @@
 r"""
-### Compare the encoders
+### What the multimodal encoder buys you
 
-Every row uses the same 100 questions, the same 300 pages and the same evaluator.
-The models differ in more than quality: EmbeddingGemma 2 loads about 440M
-parameters for text and images and stores 768 numbers per page, MetaEncoder v1
-has 28.4B parameters and 6,656 numbers per page. In float32 that is about 3.1 GB
-against 26.6 GB of vectors per million pages. Random ranking would put accuracy@10
-near 3%. With only 100 questions drawn from 65 pages, which gaps would you trust,
-and which cost would decide for your use case? The MetaEncoder rows appear only
-where the GPU was large enough to run the pair before this one.
+Every row uses the same 100 questions, the same 300 pages and the same evaluator, so the
+only thing that changes between them is which tower the page image went through.
+EmbeddingGemma 2 loads about 440M parameters and stores 768 numbers per page: 3.1 GB of
+vectors per million pages in float32. Random ranking would put accuracy@10 near 3%, which is
+the line to beat, and with 100 questions drawn from 65 annotated pages the gap between two
+runs is worth less than one question moving. Which cutoffs does the image tower win, and
+where does the text-only baseline still hold?
 """
 
-# 1. Assemble the per-model results into one table, indexed by model name
+# 1. One table, indexed by run, so the metric columns sit side by side.
 mm_table = pd.DataFrame(mm_rows).set_index("model")
 
-# 2. Show the retrieval metrics side by side so gaps are easy to compare
-display(mm_table[["accuracy@1", "accuracy@3", "accuracy@10", "mrr@10", "ndcg@10"]])
+# 2. The numbers first, because three significant figures beat a bar chart.
+display(mm_table[["accuracy@1", "accuracy@3", "accuracy@10", "mrr@10", "ndcg@10"]].round(3))
 
-# 3. Plot the headline metrics as horizontal bars, one bar group per model
-ax = mm_table[["accuracy@1", "mrr@10", "ndcg@10"]].plot.barh(figsize=(8, 4))
-ax.set(xlabel="mean score", xlim=(0, 1), title="Question to page retrieval, 300-page corpus")
-ax.invert_yaxis()
-plt.tight_layout()
+# 3. One row per run, one dot per metric: the ranking is the reading, not the bar area.
+metrics_shown = ["accuracy@1", "ndcg@10"]
+fig, ax = plt.subplots(constrained_layout=True)
+for row, (name, values) in enumerate(mm_table[metrics_shown].iterrows()):
+    ax.scatter(values, [row] * len(metrics_shown), s=46,
+               color=[OURS if metric == "ndcg@10" else BASELINE for metric in metrics_shown],
+               edgecolor="white", linewidth=0.6, zorder=3)
+    ax.annotate(f"nDCG {values['ndcg@10']:.3f}", (values["ndcg@10"], row),
+                textcoords="offset points", xytext=(0, 9), fontsize=7, color=OURS, ha="center")
+ax.axvline(0.03, color=ACCENT, linestyle=":", linewidth=1)
+ax.annotate("random", (0.03, -0.45), textcoords="offset points", xytext=(3, 0),
+            fontsize=7, color=ACCENT)
+ax.set_yticks(range(len(mm_table)), mm_table.index, fontsize=8)
+ax.set(xlim=(0, 1), ylim=(-0.6, len(mm_table) - 0.35))
+ax.scatter([], [], color=OURS, s=40, label="nDCG@10")
+ax.scatter([], [], color=BASELINE, s=40, label="accuracy@1")
+ax.legend(loc="lower right")
+panel(ax, "score", "", "page-image retrieval, 300 pages and 100 questions\nsame labels and evaluator for every row")
 plt.show()

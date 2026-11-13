@@ -2,10 +2,10 @@ r"""
 ### The same evaluator, a second ledger
 
 We keep the measuring stick of section 05: the Sentence Transformers evaluator
-with the same cutoffs. Its corpus may hold images, so it could encode these
-pages itself for a Sentence Transformers model. MetaEncoder is not one, so every
-model here follows the section 07 path: encode, rank with the shared ranking
-function, then pass the ranked hits to `compute_metrics`. Scores go to their own
+with the same cutoffs. EmbeddingGemma 2 arrives as a Sentence Transformers model, but the
+evaluator expects a ranking either way, so every run follows the section 07 path:
+encode, rank with the shared ranking function, then pass the ranked hits to
+`compute_metrics`. Scores go to their own
 ledger, `mm_rows`, because pages are a different corpus from the BioASQ papers in
 the section 20 ledger. Rerunning a model replaces its row.
 

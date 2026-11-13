@@ -94,14 +94,16 @@ uv pip install --system \
   "trectools==0.0.50" "ranx>=0.3.20,<0.4" "rank-bm25==0.2.2" "wandb>=0.19" \
   "gliner2[local]==2.1.0" "networkx>=3.4" "requests" "pyarrow" "openai>=1.60"
 
-# llama.cpp's OpenAI-compatible server. The project ships prebuilt CUDA wheels, so this
-# takes seconds; building from source instead compiles every kernel with nvcc and takes
-# about twenty minutes on a Colab T4.
+# llama.cpp's OpenAI-compatible server. Prebuilt CUDA wheels exist, but only up to cp312
+# and Colab now runs 3.13, so the wheel is tried first and the source build is the fallback.
+# The architecture is pinned: without it nvcc builds for a spread of GPUs it will never see.
 if command -v nvidia-smi >/dev/null 2>&1; then
-  uv pip install --system "llama-cpp-python==0.3.4" \
-    --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124
+  uv pip install --system "llama-cpp-python[server]==0.3.4" \
+    --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124 \
+  || CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=75" \
+       uv pip install --system --no-binary llama-cpp-python "llama-cpp-python[server]>=0.3.16"
 else
-  uv pip install --system "llama-cpp-python==0.3.4"
+  uv pip install --system "llama-cpp-python[server]>=0.3.16"
 fi
 
 # The OCR binary for the text-pipeline baseline in section 21; apt, not pip.

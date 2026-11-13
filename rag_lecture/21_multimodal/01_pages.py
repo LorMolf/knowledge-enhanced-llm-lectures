@@ -7,7 +7,8 @@ So far a paper was a string. Real documents also hold tables, charts, scanned
 pages and slides, and an OCR step before the encoder throws that layout away. A
 multimodal embedding model reads the page image itself and places it in the same
 vector space as a text question, so retrieval stays the cosine ranking of
-sections 03 and 07. Only the document side changes, from text to pixels.
+sections 03 and 07. Only the document side changes, from text to pixels — and section 08 measures what that
+buys over the text pipeline it replaces, on the same pages and the same questions.
 
 We use [ViDoRe healthcare](https://huggingface.co/datasets/vidore/syntheticDocQA_healthcare_industry_test)
 (MIT license): 1,000 page images from PDFs that a crawler found with the query

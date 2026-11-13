@@ -98,4 +98,8 @@ uv pip install --system \
 CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 \
   uv pip install --system --reinstall --no-binary llama-cpp-python "llama-cpp-python>=0.3.16"
 
+# The OCR binary for the text-pipeline baseline in section 21; apt, not pip.
+apt-get -qq update >/dev/null && apt-get -qq install -y tesseract-ocr >/dev/null
+uv pip install --system "pytesseract>=0.3.13"
+
 echo "Installed. Restart the runtime (Runtime > Restart session), then run the next cell."

@@ -1,8 +1,10 @@
 r"""
 ### What the multimodal encoder buys you
 
-Every row uses the same 100 questions, the same 300 pages and the same evaluator, so the
-only thing that changes between them is which tower the page image went through.
+Every row uses the same 100 questions, the same 300 pages and the same evaluator. The
+vision rows differ in how many pixels the model may look at; the OCR row is a different
+pipeline into the same model, which is the comparison that decides whether pixels earn
+their place at all.
 EmbeddingGemma 2 loads about 440M parameters and stores 768 numbers per page: 3.1 GB of
 vectors per million pages in float32. Random ranking would put accuracy@10 near 3%, which is
 the line to beat, and with 100 questions drawn from 65 annotated pages the gap between two
